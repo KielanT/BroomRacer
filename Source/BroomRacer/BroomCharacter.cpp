@@ -8,6 +8,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ABroomCharacter::ABroomCharacter()
@@ -45,6 +47,9 @@ ABroomCharacter::ABroomCharacter()
 	Camera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	Camera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Col"));
+	BoxCollision->SetupAttachment(RootComponent);
+
 	TempMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Temp Mesh"));
 	TempMesh->SetupAttachment(RootComponent);
 }
@@ -61,6 +66,8 @@ void ABroomCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &ABroomCharacter::OnComponentOverlap);
 }
 
 // Called every frame
@@ -85,6 +92,13 @@ void ABroomCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	}
 	
+}
+
+void ABroomCharacter::Interact(ACharacter* InteractCharacter)
+{
+	FAttachmentTransformRules Rules = FAttachmentTransformRules::KeepWorldTransform;
+	InteractCharacter->AttachToActor(this, Rules);
+	UGameplayStatics::GetPlayerController(GetWorld(), 0)->Possess(this);
 }
 
 void ABroomCharacter::Move(const FInputActionValue& Value)
@@ -120,5 +134,11 @@ void ABroomCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ABroomCharacter::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	
 }
 

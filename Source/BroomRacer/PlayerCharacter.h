@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -32,6 +33,8 @@ private:
 	void Move(const FInputActionValue& Value);
 	
 	void Look(const FInputActionValue& Value);
+
+	void OnInteract(const FInputActionValue& Value);
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -50,6 +53,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* LookAction;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		class UInputAction* InteractAction;
 
 };

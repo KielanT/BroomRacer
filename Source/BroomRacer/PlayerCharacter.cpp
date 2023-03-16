@@ -8,6 +8,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "InteractInterface.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -64,7 +66,8 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
+	
 }
 
 // Called to bind functionality to input
@@ -77,6 +80,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
+
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &APlayerCharacter::OnInteract);
 
 	}
 
@@ -114,6 +119,25 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void APlayerCharacter::OnInteract(const FInputActionValue& Value)
+{
+	TArray<AActor*> OverlappedActors;
+	GetOverlappingActors(OverlappedActors);
+
+	for(auto Actor : OverlappedActors)
+	{
+		if(UKismetSystemLibrary::DoesImplementInterface(Actor, UInteractInterface::StaticClass()))
+		{
+			if(IInteractInterface* Interface = Cast<IInteractInterface>(Actor))
+			{
+				Interface->Interact(this);
+			}
+			break;
+		}
+		
 	}
 }
 

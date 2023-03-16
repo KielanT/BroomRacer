@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PlayerCharacter.h"
+#include "BroomCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
@@ -10,7 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 
 // Sets default values
-APlayerCharacter::APlayerCharacter()
+ABroomCharacter::ABroomCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -44,10 +44,13 @@ APlayerCharacter::APlayerCharacter()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	Camera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	Camera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	TempMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Temp Mesh"));
+	TempMesh->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
-void APlayerCharacter::BeginPlay()
+void ABroomCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -61,28 +64,30 @@ void APlayerCharacter::BeginPlay()
 }
 
 // Called every frame
-void APlayerCharacter::Tick(float DeltaTime)
+void ABroomCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
 // Called to bind functionality to input
-void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ABroomCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		//Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABroomCharacter::Move);
 
 		//Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABroomCharacter::Look);
 
 	}
-
+	
 }
 
-void APlayerCharacter::Move(const FInputActionValue& Value)
+void ABroomCharacter::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
@@ -104,7 +109,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void APlayerCharacter::Look(const FInputActionValue& Value)
+void ABroomCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();

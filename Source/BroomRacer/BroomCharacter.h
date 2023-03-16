@@ -5,16 +5,16 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
-#include "PlayerCharacter.generated.h"
+#include "BroomCharacter.generated.h"
 
 UCLASS()
-class BROOMRACER_API APlayerCharacter : public ACharacter
+class BROOMRACER_API ABroomCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	APlayerCharacter();
+	ABroomCharacter();
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,7 +28,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
-
 	void Move(const FInputActionValue& Value);
 	
 	void Look(const FInputActionValue& Value);
@@ -49,7 +48,7 @@ private:
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* LookAction;
-
 	
-
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* TempMesh;
 };

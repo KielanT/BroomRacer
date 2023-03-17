@@ -137,6 +137,7 @@ void APlayerCharacter::OnInteract(const FInputActionValue& Value)
 			if(IInteractInterface* Interface = Cast<IInteractInterface>(Actor))
 			{
 				Interface->Interact(this);
+				IsMounted = true;
 			}
 			break;
 		}

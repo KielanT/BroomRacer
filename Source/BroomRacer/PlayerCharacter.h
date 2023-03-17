@@ -28,6 +28,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	
 private:
 
 	void Move(const FInputActionValue& Value);
@@ -37,9 +38,11 @@ private:
 	void OnInteract(const FInputActionValue& Value);
 
 public:
-
 	// Used for setting if the player is in menu or not
-	bool IsInGame = true; 
+	bool IsInGame = true;
+
+	UPROPERTY(BlueprintReadOnly)
+		bool IsMounted = false;
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

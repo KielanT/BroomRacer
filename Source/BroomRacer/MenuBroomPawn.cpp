@@ -9,6 +9,10 @@
 #include "LevelSequenceActor.h"
 #include "LevelSequencePlayer.h"
 #include "MovieSceneSequencePlayer.h"
+#include "Blueprint/UserWidget.h"
+#include "MenuActorUserWidget.h"
+#include "PlayerCharacter.h"
+#include "Components/TextBlock.h"
 
 // Sets default values
 AMenuBroomPawn::AMenuBroomPawn()
@@ -36,6 +40,12 @@ void AMenuBroomPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &AMenuBroomPawn::OnComponentOverlap);
+	BoxCollision->OnComponentEndOverlap.AddDynamic(this, &AMenuBroomPawn::OnComponentEndOverlap);
+
+	if(TObjectPtr<UMenuActorUserWidget> MenuWidget = Cast<UMenuActorUserWidget>(MenuButtonWidget->GetWidget()))
+	{
+		StartSlateColor = MenuWidget->ButtonText->GetColorAndOpacity();
+	}
 }
 
 // Called every frame
@@ -93,6 +103,25 @@ void AMenuBroomPawn::LoadLevel()
 void AMenuBroomPawn::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
+	if(OtherActor->GetClass()->IsChildOf(APlayerCharacter::StaticClass()))
+	{
+		if(TObjectPtr<UMenuActorUserWidget> MenuWidget = Cast<UMenuActorUserWidget>(MenuButtonWidget->GetWidget()))
+		{
+			const FSlateColor col = FSlateColor(FLinearColor::Red);
+			MenuWidget->ButtonText->SetColorAndOpacity(col);
+		}
+	}
+}
+
+void AMenuBroomPawn::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if(OtherActor->GetClass()->IsChildOf(APlayerCharacter::StaticClass()))
+	{
+		if(TObjectPtr<UMenuActorUserWidget> MenuWidget = Cast<UMenuActorUserWidget>(MenuButtonWidget->GetWidget()))
+		{
+			MenuWidget->ButtonText->SetColorAndOpacity(StartSlateColor);
+		}
+	}
 }
 

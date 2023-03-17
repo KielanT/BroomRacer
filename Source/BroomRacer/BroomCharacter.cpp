@@ -47,11 +47,16 @@ ABroomCharacter::ABroomCharacter()
 	Camera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	Camera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	BroomStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Broom Mesh"));
+	BroomStaticMesh->SetupAttachment(RootComponent);
+
+	AttachLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Attach Location"));
+	AttachLocation->SetupAttachment(RootComponent);
+	
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Col"));
 	BoxCollision->SetupAttachment(RootComponent);
 
-	TempMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Temp Mesh"));
-	TempMesh->SetupAttachment(RootComponent);
+	
 }
 
 // Called when the game starts or when spawned
@@ -98,6 +103,9 @@ void ABroomCharacter::Interact(APawn* InteractCharacter)
 {
 	FAttachmentTransformRules Rules = FAttachmentTransformRules::KeepWorldTransform;
 	InteractCharacter->AttachToActor(this, Rules);
+	InteractCharacter->SetActorLocation(AttachLocation->GetComponentLocation());
+	InteractCharacter->SetActorRotation(AttachLocation->GetComponentRotation());
+	InteractCharacter->SetActorEnableCollision(false);
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->Possess(this);
 }
 

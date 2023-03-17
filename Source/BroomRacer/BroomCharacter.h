@@ -45,7 +45,14 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* Camera;
-
+	
+	UPROPERTY(EditAnywhere) 
+		UStaticMeshComponent* BroomStaticMesh; // Is a static mesh for now, since the broom is not rigged
+	
+	UPROPERTY(EditAnywhere)
+		TObjectPtr<USceneComponent> AttachLocation;
+	
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputMappingContext* DefaultMappingContext;
 	
@@ -59,8 +66,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* LookAction;
 	
-	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* TempMesh;
+	
 	
 };
 

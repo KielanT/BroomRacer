@@ -23,5 +23,5 @@ class BROOMRACER_API IInteractInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION()
-		virtual void Interact(ACharacter* InteractCharacter) = 0;
+		virtual void Interact(APawn* InteractCharacter) = 0;
 };

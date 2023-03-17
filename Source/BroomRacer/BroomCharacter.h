@@ -28,7 +28,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	virtual void Interact(ACharacter* InteractCharacter) override;
+	virtual void Interact(APawn* InteractCharacter) override;
 	
 private:
 	void Move(const FInputActionValue& Value);

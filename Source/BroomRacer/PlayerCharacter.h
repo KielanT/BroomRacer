@@ -35,6 +35,11 @@ private:
 	void Look(const FInputActionValue& Value);
 
 	void OnInteract(const FInputActionValue& Value);
+
+public:
+
+	// Used for setting if the player is in menu or not
+	bool IsInGame = true; 
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -56,4 +61,5 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* InteractAction;
 
+	
 };

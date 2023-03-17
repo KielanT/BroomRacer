@@ -94,7 +94,7 @@ void ABroomCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	
 }
 
-void ABroomCharacter::Interact(ACharacter* InteractCharacter)
+void ABroomCharacter::Interact(APawn* InteractCharacter)
 {
 	FAttachmentTransformRules Rules = FAttachmentTransformRules::KeepWorldTransform;
 	InteractCharacter->AttachToActor(this, Rules);

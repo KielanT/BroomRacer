@@ -19,7 +19,17 @@ public:
 
 	virtual void OnPossess(APawn* InPawn) override;
 
+	
+protected:
+	virtual void BeginPlay() override;
+
 private:
 	UPROPERTY()
 		TObjectPtr<AActor> CameraActor;
+
+	UPROPERTY(EditAnywhere, Category = "User Interface")
+		TSubclassOf<UUserWidget> SettingsClass;
+
+	UPROPERTY()
+		TObjectPtr<UUserWidget> Widget;
 };

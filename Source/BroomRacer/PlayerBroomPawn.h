@@ -3,19 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "InputActionValue.h"
+#include "GameFramework/Pawn.h"
 #include "InteractInterface.h"
-#include "BroomCharacter.generated.h"
+#include "InputActionValue.h"
+#include "PlayerBroomPawn.generated.h"
 
+class UCapsuleComponent;
+class UFloatingPawnMovement;
 UCLASS()
-class BROOMRACER_API ABroomCharacter : public ACharacter, public IInteractInterface
+class BROOMRACER_API APlayerBroomPawn : public APawn, public IInteractInterface
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
-	ABroomCharacter();
+	// Sets default values for this pawn's properties
+	APlayerBroomPawn();
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,45 +31,45 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void Interact(APawn* InteractCharacter) override;
-	
+
 private:
 	void Move(const FInputActionValue& Value);
 	
 	void Look(const FInputActionValue& Value);
-
+	
 	UFUNCTION()
 		void OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult & SweepResult);
 	
 private:
+	UPROPERTY(EditAnywhere)
+		UCapsuleComponent* CapsuleComponent;
+	
+	UPROPERTY(EditAnywhere) 
+		UStaticMeshComponent* BroomStaticMesh;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* Camera;
 	
-	UPROPERTY(EditAnywhere) 
-		UStaticMeshComponent* BroomStaticMesh; // Is a static mesh for now, since the broom is not rigged
+	UPROPERTY(EditAnywhere)
+		UFloatingPawnMovement* FloatingPawnMovement;
 	
 	UPROPERTY(EditAnywhere)
 		TObjectPtr<USceneComponent> AttachLocation;
 	
-	
+	UPROPERTY(EditAnywhere)
+		class UBoxComponent* BoxCollision;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputMappingContext* DefaultMappingContext;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* MoveAction;
 
-	UPROPERTY(EditAnywhere)
-		class UBoxComponent* BoxCollision;
-		
-	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* LookAction;
-	
-	
-	
+
 };
-
-

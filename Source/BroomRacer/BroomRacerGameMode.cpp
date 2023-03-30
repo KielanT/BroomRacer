@@ -3,6 +3,7 @@
 #include "BroomRacerGameMode.h"
 
 #include "CheckpointActor.h"
+#include "OnGameOverInterface.h"
 #include "PlayerBroomPawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
@@ -32,6 +33,24 @@ void ABroomRacerGameMode::RaceFinished()
 	{
 		int missedHoops = CheckpointActors.Num() - Player->CheckpointsPassed;
 	}
+
+	TArray<AActor*> ActorsInWorld;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), ActorsInWorld);
+	
+	for(auto Actor : ActorsInWorld)
+	{
+		if(UKismetSystemLibrary::DoesImplementInterface(Actor, UOnGameOverInterface::StaticClass()))
+		{
+			if(IOnGameOverInterface* Interface = Cast<IOnGameOverInterface>(Actor))
+			{
+				Interface->OnGameOver();
+			}
+			break;
+		}
+		
+	}
+
+	
 	
 }
 

@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "BroomRacerGameMode.generated.h"
 
+class ACheckpointActor;
 UCLASS(minimalapi)
 class ABroomRacerGameMode : public AGameModeBase
 {
@@ -13,6 +14,20 @@ class ABroomRacerGameMode : public AGameModeBase
 
 public:
 	ABroomRacerGameMode();
+
+protected:
+	virtual void BeginPlay() override;
+
+	//virtual void Tick(float DeltaSeconds) override;
+
+public:
+	
+	UFUNCTION()
+		void RaceFinished();
+	
+private:
+	UPROPERTY()
+		TArray<AActor*> CheckpointActors;
 };
 
 

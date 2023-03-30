@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "CheckpointActor.generated.h"
 
+class UCapsuleComponent;
+
 UCLASS()
 class BROOMRACER_API ACheckpointActor : public AActor
 {
@@ -24,10 +26,24 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	UFUNCTION()
+		void OnEndOverlap(UPrimitiveComponent * OverlapComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex);
+
+
+public:
+	UPROPERTY(VisibleAnywhere)
+		int CheckpointIndex;
+	
+private:
 	UPROPERTY()
 		USceneComponent* RootComp;
 	
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* StaticMeshComponent;
 
+	UPROPERTY(EditAnywhere)
+		UStaticMeshComponent* CheckpointCollision;
+	
+	UPROPERTY()
+		TArray<AActor*> ActorsPassedThrough;
 };

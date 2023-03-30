@@ -8,6 +8,7 @@
 #include "InputActionValue.h"
 #include "PlayerBroomPawn.generated.h"
 
+class ABroomRacerGameMode;
 class UCapsuleComponent;
 class UFloatingPawnMovement;
 UCLASS()
@@ -40,7 +41,11 @@ private:
 	UFUNCTION()
 		void OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult & SweepResult);
-	
+
+public:
+	UPROPERTY()
+		int CheckpointsPassed = 0;
+
 private:
 	UPROPERTY(EditAnywhere)
 		UCapsuleComponent* CapsuleComponent;
@@ -71,5 +76,6 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* LookAction;
-
+	
+	
 };

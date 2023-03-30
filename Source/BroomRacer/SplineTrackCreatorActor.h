@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "SplineTrackCreatorActor.generated.h"
 
+class ACheckpointActor;
 class USplineComponent;
 UCLASS()
 class BROOMRACER_API ASplineTrackCreatorActor : public AActor
@@ -56,7 +57,7 @@ private:
 
 
 	UPROPERTY()
-		TMap<int32, AActor*> CheckpointActors;
+		TMap<int32, ACheckpointActor*> CheckpointActors;
 	
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<AActor> CheckpointClass;

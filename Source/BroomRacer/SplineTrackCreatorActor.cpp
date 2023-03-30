@@ -2,6 +2,8 @@
 
 
 #include "SplineTrackCreatorActor.h"
+
+#include "CheckpointActor.h"
 #include "Components/SplineComponent.h"
 
 // Sets default values
@@ -71,10 +73,9 @@ void ASplineTrackCreatorActor::CreateTrack()
 		
 		if(CheckpointActors.Find(i) == nullptr)
 		{
-			auto Actor = GetWorld()->SpawnActor<AActor>(CheckpointClass, Trans, Params);
-		
+			ACheckpointActor* Actor = GetWorld()->SpawnActor<ACheckpointActor>(CheckpointClass, Trans, Params);
+			Actor->CheckpointIndex = i;
 			CheckpointActors.Add(i, Actor);
-			
 		}
 		else
 		{
@@ -83,6 +84,8 @@ void ASplineTrackCreatorActor::CreateTrack()
 				auto Actor = *CheckpointActors.Find(i);
 				Actor->SetActorLocation(SplineComponent->GetLocationAtSplinePoint(i, ESplineCoordinateSpace::World));
 				Actor->SetActorRotation(SplineComponent->GetRotationAtSplinePoint(i, ESplineCoordinateSpace::World));
+				Actor->CheckpointIndex = i;
+				
 			}
 			else // if mesh no longer exists tell the map to clear so it can spawn a new one
 			{

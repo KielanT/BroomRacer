@@ -3,6 +3,8 @@
 
 #include "StartRaceActor.h"
 
+
+
 // Sets default values
 AStartRaceActor::AStartRaceActor()
 {
@@ -14,7 +16,8 @@ AStartRaceActor::AStartRaceActor()
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	StaticMeshComponent->SetupAttachment(RootComp);
-	
+
+
 }
 
 // Called when the game starts or when spawned

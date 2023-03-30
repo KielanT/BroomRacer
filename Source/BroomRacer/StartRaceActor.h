@@ -30,4 +30,5 @@ private:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* StaticMeshComponent;
 	
+
 };

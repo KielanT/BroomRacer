@@ -3,6 +3,9 @@
 
 #include "CheckpointActor.h"
 
+#include "PlayerBroomPawn.h"
+#include "Components/CapsuleComponent.h"
+
 // Sets default values
 ACheckpointActor::ACheckpointActor()
 {
@@ -14,12 +17,17 @@ ACheckpointActor::ACheckpointActor()
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	StaticMeshComponent->SetupAttachment(RootComp);
+
+	CheckpointCollision = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Checkpoint Collision"));
+	CheckpointCollision->SetupAttachment(StaticMeshComponent);
 }
 
 // Called when the game starts or when spawned
 void ACheckpointActor::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	CheckpointCollision->OnComponentEndOverlap.AddDynamic(this, &ACheckpointActor::OnEndOverlap);
 	
 }
 
@@ -28,5 +36,36 @@ void ACheckpointActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+
+void ACheckpointActor::OnEndOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	bool bIsFound = false;
+	if(!ActorsPassedThrough.IsEmpty())
+	{
+		for(auto AlreadyPassedActor : ActorsPassedThrough)
+		{
+			if(AlreadyPassedActor == OtherActor)
+			{
+				bIsFound = true;
+				break;
+			}
+		}
+	}
+
+	if(!bIsFound && OtherActor->GetClass()->IsChildOf(APlayerBroomPawn::StaticClass()))
+	{
+		// Stops calling for each component on other actor
+		// Ideally would only check for the capsule but that gets called multiple times,
+		// whereas the mesh gets called once
+		if(OtherComp->GetClass()->IsChildOf(UStaticMeshComponent::StaticClass()))
+		{
+			APlayerBroomPawn* Actor = Cast<APlayerBroomPawn>(OtherActor);
+			Actor->CheckpointsPassed++;
+			ActorsPassedThrough.Add(OtherActor);
+		}
+	}
 }
 

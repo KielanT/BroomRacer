@@ -3,6 +3,11 @@
 
 #include "FinishRaceActor.h"
 
+#include "BroomRacerGameMode.h"
+#include "CheckpointActor.h"
+#include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 AFinishRaceActor::AFinishRaceActor()
 {
@@ -14,14 +19,30 @@ AFinishRaceActor::AFinishRaceActor()
 
 	MeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	MeshComponent->SetupAttachment(RootComp);
+
+	BlockLeft = CreateDefaultSubobject<UBoxComponent>(TEXT("Block Left"));
+	BlockLeft->SetupAttachment(MeshComponent);
+
+	BlockRight = CreateDefaultSubobject<UBoxComponent>(TEXT("Block Right"));
+	BlockRight->SetupAttachment(MeshComponent);
 	
+	BlockTop = CreateDefaultSubobject<UBoxComponent>(TEXT("Block Top"));
+	BlockTop->SetupAttachment(MeshComponent);
+	
+	BlockBottom = CreateDefaultSubobject<UBoxComponent>(TEXT("Block Bottom"));
+	BlockBottom->SetupAttachment(MeshComponent);
+
+	FinishCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Finish Col"));
+	FinishCollisionBox->SetupAttachment(MeshComponent);
 }
 
 // Called when the game starts or when spawned
 void AFinishRaceActor::BeginPlay()
 {
 	Super::BeginPlay();
+	FinishCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AFinishRaceActor::OnBeginOverlap);
 	
+	GameModeRef = Cast<ABroomRacerGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
 // Called every frame
@@ -29,5 +50,15 @@ void AFinishRaceActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AFinishRaceActor::OnBeginOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(!IsRaceFinished)
+	{
+		GameModeRef->RaceFinished();
+		IsRaceFinished = true;
+	}
 }
 

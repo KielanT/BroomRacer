@@ -3,6 +3,8 @@
 
 #include "PlayerBroomPawn.h"
 
+
+#include "CheckpointActor.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
@@ -57,7 +59,7 @@ APlayerBroomPawn::APlayerBroomPawn()
 void APlayerBroomPawn::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -67,6 +69,7 @@ void APlayerBroomPawn::BeginPlay()
 	}
 	
 	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &APlayerBroomPawn::OnComponentOverlap);
+	
 }
 
 // Called every frame
@@ -139,6 +142,6 @@ void APlayerBroomPawn::Look(const FInputActionValue& Value)
 void APlayerBroomPawn::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
+
 }
 

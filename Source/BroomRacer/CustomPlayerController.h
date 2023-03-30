@@ -38,5 +38,8 @@ private:
 
 	UPROPERTY()
 		UUserWidget* CurrentWidget;
+
+	UPROPERTY()
+	TArray<AActor*> CheckpointActors;
 	
 };

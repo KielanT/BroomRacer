@@ -2,18 +2,44 @@
 
 
 #include "CustomPlayerController.h"
+
+#include "CheckpointActor.h"
+#include "GameOverUserWidget.h"
+#include "PlayerBroomPawn.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
+#include "Kismet/GameplayStatics.h"
 
 void ACustomPlayerController::OnGameOver()
 {
 	ChangeWidget(GameOverWidgetClass);
+	if(CurrentWidget->GetClass()->IsChildOf(UGameOverUserWidget::StaticClass()))
+	{
+		if(APlayerBroomPawn* PlayerPawn = Cast<APlayerBroomPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
+		{
+			UGameOverUserWidget* GameOverWidget = Cast<UGameOverUserWidget>(CurrentWidget);
+			const int Missed = CheckpointActors.Num() - PlayerPawn->CheckpointsPassed;
+			if(Missed > 0)
+			{
+				FString MissedText = "Hoops Missed: ";
+				MissedText.AppendInt(Missed);
+
+				FString TimePenalty = "Time Penalty: ";
+				TimePenalty.AppendInt( Missed * 5);
+				
+				GameOverWidget->MissedHoopsText->SetText(FText::FromString(MissedText));
+				GameOverWidget->TimePenaltyText->SetText(FText::FromString(TimePenalty));
+			}
+		}
+	}
+	
 	// Disable input
 }
 
 void ACustomPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpointActor::StaticClass(), CheckpointActors);
 	ChangeWidget(HUDWidgetClass);
 }
 

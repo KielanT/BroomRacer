@@ -21,19 +21,13 @@ ABroomRacerGameMode::ABroomRacerGameMode()
 void ABroomRacerGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpointActor::StaticClass(), CheckpointActors);
-
 	
 }
 
 
 void ABroomRacerGameMode::RaceFinished()
 {
-	if(APlayerBroomPawn* Player = Cast<APlayerBroomPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
-	{
-		int missedHoops = CheckpointActors.Num() - Player->CheckpointsPassed;
-	}
-
+	
 	TArray<AActor*> ActorsInWorld;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), ActorsInWorld);
 	

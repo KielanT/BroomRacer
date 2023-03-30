@@ -25,9 +25,7 @@ public:
 	UFUNCTION()
 		void RaceFinished();
 	
-private:
-	UPROPERTY()
-		TArray<AActor*> CheckpointActors;
+
 };
 
 

@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "OnGameOverInterface.generated.h"
+#include "OnGameStateInterface.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UOnGameOverInterface : public UInterface
+class UOnGameStateInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,12 +16,15 @@ class UOnGameOverInterface : public UInterface
 /**
  * 
  */
-class BROOMRACER_API IOnGameOverInterface
+class BROOMRACER_API IOnGameStateInterface
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	UFUNCTION()
+		virtual void OnGameStart() = 0;
+	
 	UFUNCTION()
 		virtual void OnGameOver() = 0;
 };

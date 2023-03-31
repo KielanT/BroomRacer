@@ -5,10 +5,16 @@
 
 #include "CheckpointActor.h"
 #include "GameOverUserWidget.h"
+#include "HUDWidget.h"
 #include "PlayerBroomPawn.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
+
+void ACustomPlayerController::OnGameStart()
+{
+	
+}
 
 void ACustomPlayerController::OnGameOver()
 {
@@ -41,6 +47,16 @@ void ACustomPlayerController::BeginPlay()
 	Super::BeginPlay();
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpointActor::StaticClass(), CheckpointActors);
 	ChangeWidget(HUDWidgetClass);
+
+	GetPawn()->DisableInput(this);
+	
+	if(CurrentWidget->GetClass()->IsChildOf(UHUDWidget::StaticClass()))
+	{
+		UHUDWidget* HUD = Cast<UHUDWidget>(CurrentWidget);
+		HUD->StartTimer(3, this);
+	}
+	
+	
 }
 
 void ACustomPlayerController::Tick(float DeltaSeconds)

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "OnGameOverInterface.h"
+#include "OnGameStateInterface.h"
 #include "GameFramework/PlayerController.h"
 #include "CustomPlayerController.generated.h"
 
@@ -11,11 +11,12 @@
  * 
  */
 UCLASS()
-class BROOMRACER_API ACustomPlayerController : public APlayerController, public IOnGameOverInterface
+class BROOMRACER_API ACustomPlayerController : public APlayerController, public IOnGameStateInterface
 {
 	GENERATED_BODY()
 
 public:
+	virtual void OnGameStart() override;
 	virtual void OnGameOver() override;
 
 protected:

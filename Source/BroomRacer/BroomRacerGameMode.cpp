@@ -3,7 +3,7 @@
 #include "BroomRacerGameMode.h"
 
 #include "CheckpointActor.h"
-#include "OnGameOverInterface.h"
+#include "OnGameStateInterface.h"
 #include "PlayerBroomPawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
@@ -21,7 +21,6 @@ ABroomRacerGameMode::ABroomRacerGameMode()
 void ABroomRacerGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 
@@ -33,9 +32,9 @@ void ABroomRacerGameMode::RaceFinished()
 	
 	for(auto Actor : ActorsInWorld)
 	{
-		if(UKismetSystemLibrary::DoesImplementInterface(Actor, UOnGameOverInterface::StaticClass()))
+		if(UKismetSystemLibrary::DoesImplementInterface(Actor, UOnGameStateInterface::StaticClass()))
 		{
-			if(IOnGameOverInterface* Interface = Cast<IOnGameOverInterface>(Actor))
+			if(IOnGameStateInterface* Interface = Cast<IOnGameStateInterface>(Actor))
 			{
 				Interface->OnGameOver();
 			}

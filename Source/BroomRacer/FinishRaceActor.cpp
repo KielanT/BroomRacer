@@ -44,6 +44,11 @@ void AFinishRaceActor::BeginPlay()
 	FinishCollisionBox->OnComponentEndOverlap.AddDynamic(this, &AFinishRaceActor::OnEndOverlap);
 	
 	GameModeRef = Cast<ABroomRacerGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+	
+	
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpointActor::StaticClass(), CheckpointActors);
+	
 }
 
 // Called every frame
@@ -63,6 +68,14 @@ void AFinishRaceActor::OnEndOverlap(UPrimitiveComponent* OverlapComponent, AActo
 		{
 			APlayerBroomPawn* Actor = Cast<APlayerBroomPawn>(OtherActor);
 			Actor->StopLapTime();
+
+			for(auto checkpointActor : CheckpointActors)
+			{
+				if(ACheckpointActor* Checkpoint = Cast<ACheckpointActor>(checkpointActor))
+				{
+					Checkpoint->ActorsPassedThrough.Empty();
+				}
+			}
 
 			GameModeRef->RaceFinished();
 		}

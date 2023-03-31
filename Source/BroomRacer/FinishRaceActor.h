@@ -53,4 +53,7 @@ private:
 
 	UPROPERTY()
 		ABroomRacerGameMode* GameModeRef;
+
+	UPROPERTY()	
+		TArray<AActor*> CheckpointActors;
 };

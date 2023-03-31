@@ -33,6 +33,9 @@ private:
 public:
 	UPROPERTY(VisibleAnywhere)
 		int CheckpointIndex;
+
+	UPROPERTY()
+		TArray<AActor*> ActorsPassedThrough;
 	
 private:
 	UPROPERTY()
@@ -44,6 +47,5 @@ private:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* CheckpointCollision;
 	
-	UPROPERTY()
-		TArray<AActor*> ActorsPassedThrough;
+	
 };

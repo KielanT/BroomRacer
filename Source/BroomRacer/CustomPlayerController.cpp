@@ -25,7 +25,13 @@ void ACustomPlayerController::OnGameOver()
 		if(APlayerBroomPawn* PlayerPawn = Cast<APlayerBroomPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
 		{
 			UGameOverUserWidget* GameOverWidget = Cast<UGameOverUserWidget>(CurrentWidget);
-			const int Missed = CheckpointActors.Num() - PlayerPawn->CheckpointsPassed;
+			int numCheckpoints = CheckpointActors.Num();
+			if(bIsMultipleLaps)
+			{
+				numCheckpoints =  CheckpointActors.Num() * (MaxLaps + 1); // Offset of 1 starts count at 0
+			}
+			
+			const int Missed = numCheckpoints - PlayerPawn->CheckpointsPassed;
 			if(Missed > 0)
 			{
 				int penalty = Missed * 5;

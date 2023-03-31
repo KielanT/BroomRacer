@@ -21,6 +21,7 @@ public:
 
 	void SetMaxLaps(int maxLaps);
 	void SetCurrentLap(int currentLap);
+	void SetMultipleLaps(bool isMultiple);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -49,6 +50,9 @@ private:
 	UPROPERTY()
 		TArray<AActor*> CheckpointActors;
 
+	UPROPERTY()
+	bool bIsMultipleLaps = false;
+	
 	UPROPERTY()
 		int CurrentLap = 0;
 

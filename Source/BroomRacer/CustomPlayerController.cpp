@@ -120,8 +120,11 @@ void ACustomPlayerController::RaceTimer()
 				HUD->PreviousLapTimeText->SetText(FText::FromString(""));
 			}
 
-			HUD->CurrentLapsText->SetText(FText::FromString(FString::FromInt(CurrentLap)));
-			HUD->MaxLapsText->SetText(FText::FromString(FString("/") + FString::FromInt(MaxLaps)));
+			if(bIsMultipleLaps)
+			{
+				HUD->CurrentLapsText->SetText(FText::FromString(FString::FromInt(CurrentLap)));
+				HUD->MaxLapsText->SetText(FText::FromString(FString("/") + FString::FromInt(MaxLaps)));
+			}
 		}
 	}
 }
@@ -134,4 +137,9 @@ void ACustomPlayerController::SetMaxLaps(int maxLaps)
 void ACustomPlayerController::SetCurrentLap(int currentLap)
 {
 	CurrentLap = currentLap;
+}
+
+void ACustomPlayerController::SetMultipleLaps(bool isMultiple)
+{
+	bIsMultipleLaps = isMultiple;
 }

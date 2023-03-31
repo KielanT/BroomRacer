@@ -39,6 +39,7 @@ void ABroomRacerGameMode::BeginPlay()
 	}
 
 	CustomPlayerController = Cast<ACustomPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	CustomPlayerController->SetMultipleLaps(bIsMultipleLaps);
 	CustomPlayerController->SetMaxLaps(MaxLaps);
 }
 

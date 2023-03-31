@@ -128,6 +128,9 @@ void ACustomPlayerController::RaceTimer()
 
 			if(bIsMultipleLaps)
 			{
+				FString Best = "Best: " + FString::FromInt(PlayerPawn->BestLapTime);
+				HUD->BestTimeText->SetText(FText::FromString(Best));
+				
 				HUD->CurrentLapsText->SetText(FText::FromString(FString::FromInt(CurrentLap)));
 				HUD->MaxLapsText->SetText(FText::FromString(FString("/") + FString::FromInt(MaxLaps)));
 			}

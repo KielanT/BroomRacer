@@ -37,6 +37,9 @@ public:
 		TObjectPtr<UTextBlock> PreviousLapTimeText;
 
 	UPROPERTY(meta = (BindWidget))
+		TObjectPtr<UTextBlock> BestTimeText;
+
+	UPROPERTY(meta = (BindWidget))
 		TObjectPtr<UTextBlock> MaxLapsText;
 
 	UPROPERTY(meta = (BindWidget))

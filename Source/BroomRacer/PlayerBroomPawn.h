@@ -57,6 +57,9 @@ public:
 
 	UPROPERTY()
 		float PreviousLapTime = 0;
+
+	UPROPERTY()
+		float BestLapTime = 0;
 	
 private:
 	UPROPERTY(EditAnywhere)

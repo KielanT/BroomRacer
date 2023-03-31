@@ -25,4 +25,10 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 		TObjectPtr<UTextBlock> LapTimeText;
+
+	UPROPERTY(meta = (BindWidget))
+		TObjectPtr<UTextBlock> BestLapTimeText;
+	
+	UPROPERTY(meta = (BindWidget))
+		TObjectPtr<UTextBlock> LapTimeWithPenaltyText;
 };

@@ -116,6 +116,11 @@ void APlayerBroomPawn::StopLapTime()
 {
 	// Set previous Lap time and fastest lap time
 	PreviousLapTime = GetWorld()->GetTimerManager().GetTimerElapsed(LapTimeTimer);
+
+	if(PreviousLapTime > BestLapTime)
+	{
+		BestLapTime = PreviousLapTime;
+	}
 	
 	GetWorld()->GetTimerManager().ClearTimer(LapTimeTimer);
 }

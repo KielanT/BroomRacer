@@ -7,9 +7,11 @@ bool UGameOverUserWidget::Initialize()
 {
 	Super::Initialize();
 
-	if(MissedHoopsText != nullptr) return false;
-	if(TimePenaltyText != nullptr) return false;
-	if(LapTimeText != nullptr) return false;
+	if(MissedHoopsText		  != nullptr) return false;
+	if(TimePenaltyText		  != nullptr) return false;
+	if(LapTimeText		      != nullptr) return false;
+	if(BestLapTimeText		  != nullptr) return false;
+	if(LapTimeWithPenaltyText != nullptr) return false;
 
 	return true;
 }

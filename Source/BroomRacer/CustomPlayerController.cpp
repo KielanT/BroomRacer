@@ -28,21 +28,31 @@ void ACustomPlayerController::OnGameOver()
 			const int Missed = CheckpointActors.Num() - PlayerPawn->CheckpointsPassed;
 			if(Missed > 0)
 			{
+				int penalty = Missed * 5;
 				FString MissedText = "Hoops Missed: ";
 				MissedText.AppendInt(Missed);
 
 				FString TimePenalty = "Time Penalty: ";
-				TimePenalty.AppendInt( Missed * 5);
+				TimePenalty.AppendInt( penalty);
 
-				
+				FString LapTimeWithPenalty = "Time with Penalty: ";
+				LapTimeWithPenalty.AppendInt(PlayerPawn->PreviousLapTime + penalty);
+				GameOverWidget->LapTimeWithPenaltyText->SetText(FText::FromString(LapTimeWithPenalty));
 				
 				GameOverWidget->MissedHoopsText->SetText(FText::FromString(MissedText));
 				GameOverWidget->TimePenaltyText->SetText(FText::FromString(TimePenalty));
 			}
 			
+			FString BestLapTime = "Best Time: ";
+			BestLapTime.AppendInt(PlayerPawn->BestLapTime);
+			GameOverWidget->BestLapTimeText->SetText(FText::FromString(BestLapTime));
+			
 			FString LapTime = "Lap Time: ";
 			LapTime.AppendInt(PlayerPawn->PreviousLapTime);
 			GameOverWidget->LapTimeText->SetText(FText::FromString(LapTime));
+
+			
+			
 		}
 	}
 }

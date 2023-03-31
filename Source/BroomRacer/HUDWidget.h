@@ -33,6 +33,15 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		TObjectPtr<UTextBlock> GameRaceTimerText;
 
+	UPROPERTY(meta = (BindWidget))
+		TObjectPtr<UTextBlock> PreviousLapTimeText;
+
+	UPROPERTY(meta = (BindWidget))
+		TObjectPtr<UTextBlock> MaxLapsText;
+
+	UPROPERTY(meta = (BindWidget))
+		TObjectPtr<UTextBlock> CurrentLapsText;
+
 private:
 	UPROPERTY()
 		FTimerHandle RaceStartCountDownTimer;

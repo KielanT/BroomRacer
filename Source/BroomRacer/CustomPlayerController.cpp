@@ -111,6 +111,27 @@ void ACustomPlayerController::RaceTimer()
 			
 			if(Seconds >= 0)
 				HUD->GameRaceTimerText->SetText(FText::FromString(SecondsText));
+
+			if(PlayerPawn->PreviousLapTime > 0)
+			{
+				HUD->PreviousLapTimeText->SetText(FText::FromString(FString::FromInt(PlayerPawn->PreviousLapTime)));
+			}else
+			{
+				HUD->PreviousLapTimeText->SetText(FText::FromString(""));
+			}
+
+			HUD->CurrentLapsText->SetText(FText::FromString(FString::FromInt(CurrentLap)));
+			HUD->MaxLapsText->SetText(FText::FromString(FString("/") + FString::FromInt(MaxLaps)));
 		}
 	}
+}
+
+void ACustomPlayerController::SetMaxLaps(int maxLaps)
+{
+	MaxLaps = maxLaps;
+}
+
+void ACustomPlayerController::SetCurrentLap(int currentLap)
+{
+	CurrentLap = currentLap;
 }

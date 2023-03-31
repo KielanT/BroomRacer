@@ -19,6 +19,8 @@ public:
 	virtual void OnGameStart() override;
 	virtual void OnGameOver() override;
 
+	void SetMaxLaps(int maxLaps);
+	void SetCurrentLap(int currentLap);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -31,6 +33,8 @@ private:
 	
 	UFUNCTION()
 		void RaceTimer();
+
+	
 	
 private:
 	UPROPERTY(EditAnywhere, Category ="User Interface")
@@ -45,5 +49,9 @@ private:
 	UPROPERTY()
 		TArray<AActor*> CheckpointActors;
 
+	UPROPERTY()
+		int CurrentLap = 0;
 
+	UPROPERTY()
+		int MaxLaps = 0;
 };

@@ -45,6 +45,16 @@ void ASplineTrackCreatorActor::Tick(float DeltaTime)
 
 }
 
+bool ASplineTrackCreatorActor::IsMulitpleLaps()
+{
+	return bIsMultipleLaps;
+}
+
+int ASplineTrackCreatorActor::GetLaps()
+{
+	return MaxLaps;
+}
+
 void ASplineTrackCreatorActor::CreateTrack()
 {
 	FActorSpawnParameters Params;

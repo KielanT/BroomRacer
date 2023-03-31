@@ -3,8 +3,10 @@
 #include "BroomRacerGameMode.h"
 
 #include "CheckpointActor.h"
+#include "CustomPlayerController.h"
 #include "OnGameStateInterface.h"
 #include "PlayerBroomPawn.h"
+#include "SplineTrackCreatorActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -16,31 +18,61 @@ ABroomRacerGameMode::ABroomRacerGameMode()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ABroomRacerGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	TArray<AActor*> InActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASplineTrackCreatorActor::StaticClass(), InActors);
+	for(auto Actor : InActors)
+	{
+		if(ASplineTrackCreatorActor* Track = Cast<ASplineTrackCreatorActor>(Actor))
+		{
+			bIsMultipleLaps = Track->IsMulitpleLaps();
+			MaxLaps = Track->GetLaps();
+			break;
+		}
+	}
+
+	CustomPlayerController = Cast<ACustomPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	CustomPlayerController->SetMaxLaps(MaxLaps);
+}
+
+void ABroomRacerGameMode::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
 }
 
 
 void ABroomRacerGameMode::RaceFinished()
 {
 	// if multiple laps dont call interface
-	TArray<AActor*> ActorsInWorld;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), ActorsInWorld);
-	
-	for(auto Actor : ActorsInWorld)
+	if(!bIsMultipleLaps || CurrentLaps == MaxLaps)
 	{
-		if(UKismetSystemLibrary::DoesImplementInterface(Actor, UOnGameStateInterface::StaticClass()))
+		TArray<AActor*> ActorsInWorld;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), ActorsInWorld);
+	
+		for(auto Actor : ActorsInWorld)
 		{
-			if(IOnGameStateInterface* Interface = Cast<IOnGameStateInterface>(Actor))
+			if(UKismetSystemLibrary::DoesImplementInterface(Actor, UOnGameStateInterface::StaticClass()))
 			{
-				Interface->OnGameOver();
+				if(IOnGameStateInterface* Interface = Cast<IOnGameStateInterface>(Actor))
+				{
+					Interface->OnGameOver();
+				}
+				break;
 			}
-			break;
 		}
-		
+	}
+	else
+	{
+		CurrentLaps++;
+		CustomPlayerController->SetCurrentLap(CurrentLaps);
 	}
 
 	

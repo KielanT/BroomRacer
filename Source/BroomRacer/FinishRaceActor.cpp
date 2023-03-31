@@ -56,14 +56,17 @@ void AFinishRaceActor::Tick(float DeltaTime)
 void AFinishRaceActor::OnEndOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	
 	if(OtherActor->GetClass()->IsChildOf(APlayerBroomPawn::StaticClass()))
 	{
 		if(OtherComp->GetClass()->IsChildOf(UStaticMeshComponent::StaticClass()))
 		{
 			APlayerBroomPawn* Actor = Cast<APlayerBroomPawn>(OtherActor);
 			Actor->StopLapTime();
+
+			GameModeRef->RaceFinished();
 		}
 	}
 	
-	GameModeRef->RaceFinished();
+	
 }

@@ -27,6 +27,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	bool IsMulitpleLaps();
+
+	int GetLaps();
+
 private:
 	UFUNCTION()
 		void CreateTrack();
@@ -64,5 +68,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		bool UseConstructionScript = true;
-		
+
+	UPROPERTY(EditAnywhere)
+		bool bIsMultipleLaps = false;
+
+	UPROPERTY(EditAnywhere)
+		int MaxLaps = 1;
 };

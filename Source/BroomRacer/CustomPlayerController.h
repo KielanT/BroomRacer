@@ -19,6 +19,7 @@ public:
 	virtual void OnGameStart() override;
 	virtual void OnGameOver() override;
 
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -27,8 +28,9 @@ protected:
 private:
 	UFUNCTION()
 		void ChangeWidget(TSubclassOf<UUserWidget> WidgetClass);
-
-
+	
+	UFUNCTION()
+		void RaceTimer();
 	
 private:
 	UPROPERTY(EditAnywhere, Category ="User Interface")
@@ -41,6 +43,7 @@ private:
 		UUserWidget* CurrentWidget;
 
 	UPROPERTY()
-	TArray<AActor*> CheckpointActors;
-	
+		TArray<AActor*> CheckpointActors;
+
+
 };

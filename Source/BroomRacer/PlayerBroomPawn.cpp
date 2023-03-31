@@ -105,6 +105,26 @@ void APlayerBroomPawn::Interact(APawn* InteractCharacter)
 	UGameplayStatics::GetPlayerController(GetWorld(), 0)->Possess(this);
 }
 
+void APlayerBroomPawn::StartLapTime()
+{
+	GetWorld()->GetTimerManager().ClearTimer(LapTimeTimer); // Make sure lap timer is stopped
+
+	GetWorld()->GetTimerManager().SetTimer(LapTimeTimer, this, &APlayerBroomPawn::OnLapTimerFinished, MaxLapTime, false);
+}
+
+void APlayerBroomPawn::StopLapTime()
+{
+	// Set previous Lap time and fastest lap time
+	PreviousLapTime = GetWorld()->GetTimerManager().GetTimerElapsed(LapTimeTimer);
+	
+	GetWorld()->GetTimerManager().ClearTimer(LapTimeTimer);
+}
+
+FTimerHandle APlayerBroomPawn::GetLapTimeHandle()
+{
+	return LapTimeTimer;
+}
+
 void APlayerBroomPawn::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -143,5 +163,11 @@ void APlayerBroomPawn::OnComponentOverlap(UPrimitiveComponent* OverlappedCompone
                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 
+}
+
+void APlayerBroomPawn::OnLapTimerFinished()
+{
+	// Should be rarely called
+	// Bring up some sort of "Are you there menu"
 }
 

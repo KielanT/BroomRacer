@@ -26,7 +26,7 @@ void ABroomRacerGameMode::BeginPlay()
 
 void ABroomRacerGameMode::RaceFinished()
 {
-	
+	// if multiple laps dont call interface
 	TArray<AActor*> ActorsInWorld;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), ActorsInWorld);
 	

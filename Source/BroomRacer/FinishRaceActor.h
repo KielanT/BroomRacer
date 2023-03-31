@@ -27,9 +27,8 @@ public:
 
 private:
 	UFUNCTION()
-		void OnBeginOverlap(UPrimitiveComponent * OverlapComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex,
-			bool bFromSweep, const FHitResult & SweepResult); 
-
+		void OnEndOverlap(UPrimitiveComponent * OverlapComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex);
+		
 private:
 	UPROPERTY()
 		USceneComponent* RootComp;
@@ -54,6 +53,4 @@ private:
 
 	UPROPERTY()
 		ABroomRacerGameMode* GameModeRef;
-
-	bool IsRaceFinished = false;
 };

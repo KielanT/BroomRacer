@@ -18,6 +18,7 @@ void ACustomPlayerController::OnGameStart()
 
 void ACustomPlayerController::OnGameOver()
 {
+	GetPawn()->DisableInput(this);
 	ChangeWidget(GameOverWidgetClass);
 	if(CurrentWidget->GetClass()->IsChildOf(UGameOverUserWidget::StaticClass()))
 	{
@@ -32,14 +33,18 @@ void ACustomPlayerController::OnGameOver()
 
 				FString TimePenalty = "Time Penalty: ";
 				TimePenalty.AppendInt( Missed * 5);
+
+				
 				
 				GameOverWidget->MissedHoopsText->SetText(FText::FromString(MissedText));
 				GameOverWidget->TimePenaltyText->SetText(FText::FromString(TimePenalty));
 			}
+			
+			FString LapTime = "Lap Time: ";
+			LapTime.AppendInt(PlayerPawn->PreviousLapTime);
+			GameOverWidget->LapTimeText->SetText(FText::FromString(LapTime));
 		}
 	}
-	
-	// Disable input
 }
 
 void ACustomPlayerController::BeginPlay()
@@ -62,6 +67,7 @@ void ACustomPlayerController::BeginPlay()
 void ACustomPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	RaceTimer();
 	
 }
 
@@ -78,6 +84,23 @@ void ACustomPlayerController::ChangeWidget(TSubclassOf<UUserWidget> WidgetClass)
 		if (CurrentWidget != nullptr) 
 		{
 			CurrentWidget->AddToViewport(); // Adds widget to viewport
+		}
+	}
+}
+
+void ACustomPlayerController::RaceTimer()
+{
+	if(CurrentWidget->GetClass()->IsChildOf(UHUDWidget::StaticClass()))
+	{
+		if(APlayerBroomPawn* PlayerPawn = Cast<APlayerBroomPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
+		{
+			UHUDWidget* HUD = Cast<UHUDWidget>(CurrentWidget);
+			FTimerHandle handle = PlayerPawn->GetLapTimeHandle();
+			int Seconds = GetWorld()->GetTimerManager().GetTimerElapsed(handle);
+			FString SecondsText = FString::FromInt(Seconds);
+			
+			if(Seconds >= 0)
+				HUD->GameRaceTimerText->SetText(FText::FromString(SecondsText));
 		}
 	}
 }

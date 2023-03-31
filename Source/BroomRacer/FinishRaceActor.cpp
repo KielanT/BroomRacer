@@ -5,6 +5,7 @@
 
 #include "BroomRacerGameMode.h"
 #include "CheckpointActor.h"
+#include "PlayerBroomPawn.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -40,7 +41,7 @@ AFinishRaceActor::AFinishRaceActor()
 void AFinishRaceActor::BeginPlay()
 {
 	Super::BeginPlay();
-	FinishCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &AFinishRaceActor::OnBeginOverlap);
+	FinishCollisionBox->OnComponentEndOverlap.AddDynamic(this, &AFinishRaceActor::OnEndOverlap);
 	
 	GameModeRef = Cast<ABroomRacerGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 }
@@ -52,13 +53,17 @@ void AFinishRaceActor::Tick(float DeltaTime)
 
 }
 
-void AFinishRaceActor::OnBeginOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AFinishRaceActor::OnEndOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if(!IsRaceFinished)
+	if(OtherActor->GetClass()->IsChildOf(APlayerBroomPawn::StaticClass()))
 	{
-		GameModeRef->RaceFinished();
-		IsRaceFinished = true;
+		if(OtherComp->GetClass()->IsChildOf(UStaticMeshComponent::StaticClass()))
+		{
+			APlayerBroomPawn* Actor = Cast<APlayerBroomPawn>(OtherActor);
+			Actor->StopLapTime();
+		}
 	}
+	
+	GameModeRef->RaceFinished();
 }
-

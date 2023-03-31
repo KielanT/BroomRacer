@@ -33,6 +33,12 @@ public:
 
 	virtual void Interact(APawn* InteractCharacter) override;
 
+	void StartLapTime();
+	void StopLapTime();
+
+	UFUNCTION()
+		FTimerHandle GetLapTimeHandle();
+	
 private:
 	void Move(const FInputActionValue& Value);
 	
@@ -42,10 +48,16 @@ private:
 		void OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult & SweepResult);
 
+	UFUNCTION()
+		void OnLapTimerFinished();
+	
 public:
 	UPROPERTY()
 		int CheckpointsPassed = 0;
 
+	UPROPERTY()
+		float PreviousLapTime = 0;
+	
 private:
 	UPROPERTY(EditAnywhere)
 		UCapsuleComponent* CapsuleComponent;
@@ -77,5 +89,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* LookAction;
 	
-	
+	UPROPERTY()
+		FTimerHandle LapTimeTimer;
+
+	UPROPERTY()
+		float MaxLapTime = 3600; // Current Max lap time is an hour
+
+
 };

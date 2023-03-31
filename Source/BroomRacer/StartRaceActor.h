@@ -24,11 +24,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	UFUNCTION()
+		void OnEndOverlap(UPrimitiveComponent * OverlapComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex);
+	
+private:
 	UPROPERTY()
 		USceneComponent* RootComp;
 	
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* StaticMeshComponent;
-	
 
+	UPROPERTY(EditAnywhere)
+		class UBoxComponent* StartCollisionBox;
 };

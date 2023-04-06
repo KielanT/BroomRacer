@@ -54,7 +54,7 @@ private:
 	bool bIsMultipleLaps = false;
 	
 	UPROPERTY()
-		int CurrentLap = 0;
+		int CurrentLap = 1;
 
 	UPROPERTY()
 		int MaxLaps = 0;

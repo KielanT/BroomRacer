@@ -48,7 +48,7 @@ void ABroomRacerGameMode::Tick(float DeltaSeconds)
 
 void ABroomRacerGameMode::RaceFinished()
 {
-	// if multiple laps dont call interface
+	// if multiple laps dont call interface until max laps is reached
 	if(!bIsMultipleLaps || CurrentLaps == MaxLaps)
 	{
 		TArray<AActor*> ActorsInWorld;
@@ -71,7 +71,6 @@ void ABroomRacerGameMode::RaceFinished()
 		CurrentLaps++;
 		CustomPlayerController->SetCurrentLap(CurrentLaps);
 	}
-
 	
 	
 }

@@ -26,16 +26,12 @@ void ABroomRacerGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	TArray<AActor*> InActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASplineTrackCreatorActor::StaticClass(), InActors);
-	for(auto Actor : InActors)
+	
+	
+	if(const TObjectPtr<ASplineTrackCreatorActor> Track = ASplineTrackCreatorActor::GetInstance())
 	{
-		if(ASplineTrackCreatorActor* Track = Cast<ASplineTrackCreatorActor>(Actor))
-		{
-			bIsMultipleLaps = Track->IsMulitpleLaps();
-			MaxLaps = Track->GetLaps();
-			break;
-		}
+		bIsMultipleLaps = Track->IsMulitpleLaps();
+		MaxLaps = Track->GetLaps();
 	}
 
 	CustomPlayerController = Cast<ACustomPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));

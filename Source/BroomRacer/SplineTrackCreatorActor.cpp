@@ -5,6 +5,9 @@
 
 #include "CheckpointActor.h"
 #include "Components/SplineComponent.h"
+#include "Kismet/GameplayStatics.h"
+
+static TObjectPtr<ASplineTrackCreatorActor> Instance = nullptr;
 
 // Sets default values
 ASplineTrackCreatorActor::ASplineTrackCreatorActor()
@@ -26,6 +29,7 @@ void ASplineTrackCreatorActor::BeginPlay()
 
 	if(!UseConstructionScript)
 		CreateTrack();
+	
 }
 
 void ASplineTrackCreatorActor::OnConstruction(const FTransform& Transform)
@@ -53,6 +57,23 @@ bool ASplineTrackCreatorActor::IsMulitpleLaps()
 int ASplineTrackCreatorActor::GetLaps()
 {
 	return MaxLaps;
+}
+
+TObjectPtr<ASplineTrackCreatorActor> ASplineTrackCreatorActor::GetInstance()
+{
+	if(Instance == nullptr)
+	{
+		UWorld* WorldRef = GEngine->GameViewport->GetWorld();
+		Instance = Cast<ASplineTrackCreatorActor>(UGameplayStatics::GetActorOfClass(WorldRef, StaticClass()));
+	}
+	
+	// If still null after trying to find the actor then return nullptr (less nested if statements and less checks)
+	if(Instance == nullptr)
+	{
+		return nullptr;
+	}
+	
+	return Instance;
 }
 
 void ASplineTrackCreatorActor::CreateTrack()

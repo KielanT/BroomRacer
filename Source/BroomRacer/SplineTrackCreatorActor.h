@@ -13,10 +13,12 @@ class BROOMRACER_API ASplineTrackCreatorActor : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
+private:	
 	// Sets default values for this actor's properties
 	ASplineTrackCreatorActor();
 
+	//ASplineTrackCreatorActor(const ASplineTrackCreatorActor& actor) = delete;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -24,19 +26,26 @@ protected:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 public:	
+	static TObjectPtr<ASplineTrackCreatorActor> GetInstance();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	bool IsMulitpleLaps();
 
 	int GetLaps();
+	
+	
 
+	
 private:
 	UFUNCTION()
 		void CreateTrack();
 
 	UFUNCTION()
 		void ClearTrack();
+	
+
 	
 private:
 	UPROPERTY()
@@ -74,4 +83,5 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		int MaxLaps = 1;
+	
 };

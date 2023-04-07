@@ -130,6 +130,11 @@ void APlayerBroomPawn::StopLapTime()
 	GetWorld()->GetTimerManager().ClearTimer(LapTimeTimer);
 }
 
+UFloatingPawnMovement* APlayerBroomPawn::GetMovement()
+{
+	return FloatingPawnMovement;
+}
+
 FTimerHandle APlayerBroomPawn::GetLapTimeHandle()
 {
 	return LapTimeTimer;

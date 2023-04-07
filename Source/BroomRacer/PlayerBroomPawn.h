@@ -36,6 +36,8 @@ public:
 	void StartLapTime();
 	void StopLapTime();
 
+	UFloatingPawnMovement* GetMovement();
+
 	UFUNCTION()
 		FTimerHandle GetLapTimeHandle();
 	

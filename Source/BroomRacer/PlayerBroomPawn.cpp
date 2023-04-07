@@ -47,6 +47,7 @@ APlayerBroomPawn::APlayerBroomPawn()
 	Camera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Movement"));
+	DefaultSpeed = FloatingPawnMovement->MaxSpeed;
 	
 	AttachLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Attach Location"));
 	AttachLocation->SetupAttachment(RootComponent);

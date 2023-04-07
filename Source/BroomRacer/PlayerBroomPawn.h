@@ -62,6 +62,9 @@ public:
 
 	UPROPERTY()
 		float BestLapTime = 0;
+
+	UPROPERTY()
+		float DefaultSpeed;
 	
 private:
 	UPROPERTY(EditAnywhere)

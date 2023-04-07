@@ -75,6 +75,14 @@ void ACustomPlayerController::BeginPlay()
 	{
 		UHUDWidget* HUD = Cast<UHUDWidget>(CurrentWidget);
 		HUD->StartTimer(3, this);
+		
+		HUD->PreviousLapTimeText->SetVisibility(ESlateVisibility::Hidden);
+		
+		HUD->MaxLapsText->SetVisibility(ESlateVisibility::Hidden);
+		
+		HUD->BestTimeText->SetVisibility(ESlateVisibility::Hidden);
+		
+		HUD->CurrentLapsText->SetVisibility(ESlateVisibility::Hidden);
 	}
 	SetInputMode(FInputModeGameOnly());
 
@@ -114,23 +122,42 @@ void ACustomPlayerController::RaceTimer()
 		{
 			UHUDWidget* HUD = Cast<UHUDWidget>(CurrentWidget);
 			FTimerHandle handle = PlayerPawn->GetLapTimeHandle();
-			int Seconds = GetWorld()->GetTimerManager().GetTimerElapsed(handle);
-			FString SecondsText = FString::FromInt(Seconds);
-			
-			if(Seconds >= 0)
-				HUD->GameRaceTimerText->SetText(FText::FromString(SecondsText));
+			float Seconds = GetWorld()->GetTimerManager().GetTimerElapsed(handle);
+			FString SecondsText = FString::SanitizeFloat(Seconds);
 
-			if(PlayerPawn->PreviousLapTime > 0)
+			if(Seconds >= 0)
 			{
-				HUD->PreviousLapTimeText->SetText(FText::FromString(FString::FromInt(PlayerPawn->PreviousLapTime)));
-			}else
-			{
-				HUD->PreviousLapTimeText->SetText(FText::FromString(""));
+				
+				FString SecondsStr = "Lap Time: " + SecondsText;
+				HUD->GameRaceTimerText->SetText(FText::FromString(SecondsStr));
 			}
+			else
+			{
+				FString SecondsStr = "Lap Time: -";
+				HUD->GameRaceTimerText->SetText(FText::FromString(SecondsStr));
+			}
+		
 
 			if(bIsMultipleLaps)
 			{
-				FString Best = "Best: " + FString::FromInt(PlayerPawn->BestLapTime);
+				HUD->PreviousLapTimeText->SetVisibility(ESlateVisibility::Visible);
+				HUD->MaxLapsText->SetVisibility(ESlateVisibility::Visible);
+				HUD->BestTimeText->SetVisibility(ESlateVisibility::Visible);
+				HUD->CurrentLapsText->SetVisibility(ESlateVisibility::Visible);
+				
+				if(PlayerPawn->PreviousLapTime > 0)
+				{
+					FString Previous = "Previous: " + FString::SanitizeFloat(PlayerPawn->PreviousLapTime);
+					HUD->PreviousLapTimeText->SetText(FText::FromString(Previous));
+				}
+				else
+				{
+					FString Previous = "Previous: -";
+					HUD->PreviousLapTimeText->SetText(FText::FromString(Previous));
+				}
+				
+				
+				FString Best = "Best: " + FString::SanitizeFloat(PlayerPawn->BestLapTime);
 				HUD->BestTimeText->SetText(FText::FromString(Best));
 				
 				HUD->CurrentLapsText->SetText(FText::FromString(FString::FromInt(CurrentLap)));

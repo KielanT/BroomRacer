@@ -10,10 +10,15 @@ bool UHUDWidget::Initialize()
 	Super::Initialize();
 
 	if(StartGameTimerText != nullptr) return false;
+	
 	if(GameRaceTimerText != nullptr) return false;
+	
 	if(PreviousLapTimeText != nullptr) return false;
+	
 	if(MaxLapsText != nullptr) return false;
+	
 	if(BestTimeText != nullptr) return false;
+	
 	if(CurrentLapsText != nullptr) return false;
 	
 	return true;

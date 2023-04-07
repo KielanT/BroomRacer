@@ -20,17 +20,4 @@ void AMainMenuGamemode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(CameraActor)
-	{
-		auto Actor = GetWorld()->SpawnActor(CameraActor);
-		if(TObjectPtr<AMenuPlayerController> Controller = Cast<AMenuPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0)))
-		{
-			if(TObjectPtr<APlayerCharacter> Character = Cast<APlayerCharacter>(Controller->GetPawn()))
-			{
-				Character->IsInGame = false;
-				UE_LOG(LogTemp, Warning, TEXT("Found Character"));
-			}
-			Controller->SetCameraActor(Actor);
-		}
-	}
 }

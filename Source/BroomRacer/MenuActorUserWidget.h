@@ -22,6 +22,8 @@ class BROOMRACER_API UMenuActorUserWidget : public UUserWidget
 protected:
 	virtual bool Initialize() override;
 
+
+	
 public:
 	UPROPERTY(meta = (BindWidget))
 		TObjectPtr<UTextBlock> ButtonText;

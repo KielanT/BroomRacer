@@ -76,7 +76,8 @@ void ACustomPlayerController::BeginPlay()
 		UHUDWidget* HUD = Cast<UHUDWidget>(CurrentWidget);
 		HUD->StartTimer(3, this);
 	}
-	
+	SetInputMode(FInputModeGameOnly());
+
 	
 }
 
@@ -102,6 +103,7 @@ void ACustomPlayerController::ChangeWidget(TSubclassOf<UUserWidget> WidgetClass)
 			CurrentWidget->AddToViewport(); // Adds widget to viewport
 		}
 	}
+	
 }
 
 void ACustomPlayerController::RaceTimer()

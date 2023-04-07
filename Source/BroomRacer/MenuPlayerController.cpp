@@ -22,18 +22,43 @@ void AMenuPlayerController::OnPossess(APawn* InPawn)
 		SetViewTarget(CameraActor);
 }
 
+void AMenuPlayerController::ShowPlayMenu()
+{
+	ChangeWidget(PlayClass);
+	SetInputMode(FInputModeGameAndUI());
+	bShowMouseCursor = true;
+}
+
+void AMenuPlayerController::ShowSettingsMenu()
+{
+	ChangeWidget(SettingsClass);
+}
+
 void AMenuPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// Here for testing
+	if(CameraClass)
+	{
+		CameraActor = GetWorld()->SpawnActor(CameraClass);
+		SetViewTarget(CameraActor);
+	}
+}
 
-	//if(SettingsClass)
-	//{
-	//	Widget = CreateWidget(GetWorld(), SettingsClass);
-	//	if(Widget)
-	//	{
-	//		Widget->AddToViewport();
-	//	}
-	//}
+
+void AMenuPlayerController::ChangeWidget(TSubclassOf<UUserWidget> WidgetClass)
+{
+	if (Widget != nullptr) // Checks if  widget is null or not
+	{
+		Widget->RemoveFromParent(); // Removes widget from viewport
+		Widget = nullptr; // Sets widget to null
+	}
+	if (WidgetClass != nullptr) // Checks if widget class is null or not
+	{
+		Widget = CreateWidget<UUserWidget>(GetWorld(), WidgetClass); // Creates widget
+		if (Widget != nullptr) 
+		{
+			Widget->AddToViewport(); // Adds widget to viewport
+		}
+	}
 }

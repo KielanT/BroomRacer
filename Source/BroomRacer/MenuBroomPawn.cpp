@@ -2,6 +2,9 @@
 
 
 #include "MenuBroomPawn.h"
+
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "MenuButtonActorWidget.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -11,6 +14,7 @@
 #include "MovieSceneSequencePlayer.h"
 #include "Blueprint/UserWidget.h"
 #include "MenuActorUserWidget.h"
+#include "MenuPlayerController.h"
 #include "PlayerCharacter.h"
 #include "Components/TextBlock.h"
 
@@ -60,6 +64,12 @@ void AMenuBroomPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		//Moving
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMenuBroomPawn::Move);
+	}
+	
 }
 
 void AMenuBroomPawn::Interact(APawn* InteractCharacter)
@@ -68,9 +78,19 @@ void AMenuBroomPawn::Interact(APawn* InteractCharacter)
 	InteractCharacter->AttachToActor(this, Rules);
 	InteractCharacter->SetActorLocation(AttachLocation->GetComponentLocation());
 	InteractCharacter->SetActorRotation(AttachLocation->GetComponentRotation());
-	UGameplayStatics::GetPlayerController(GetWorld(), 0)->Possess(this);
+	AMenuPlayerController* MenuController = Cast<AMenuPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	MenuController->Possess(this);
 	MenuButtonWidget->SetVisibility(false);
 
+	if (AMenuPlayerController* BroomController = Cast<AMenuPlayerController>(Controller))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Menu Broom controller"));
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(BroomController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		}
+	}
+	
 	if(MoveState == EMoveState::FlyOfScreen)
 	{
 		TArray<AActor*> OutActors;
@@ -90,6 +110,16 @@ void AMenuBroomPawn::Interact(APawn* InteractCharacter)
 			LevelSequenceActor->SequencePlayer->Play();
 		}
 	}
+
+	if(ButtonType == EButtonType::Play)
+	{
+		MenuController->ShowPlayMenu();
+	}
+	if(ButtonType == EButtonType::Settings)
+	{
+		MenuController->ShowSettingsMenu();
+	}
+	
 }
 
 void AMenuBroomPawn::LoadLevel()
@@ -98,6 +128,11 @@ void AMenuBroomPawn::LoadLevel()
 	{
 		UGameplayStatics::OpenLevel(GetWorld(), FName(LevelToLoad));
 	}
+}
+
+EButtonType AMenuBroomPawn::GetButtonType()
+{
+	return ButtonType;
 }
 
 void AMenuBroomPawn::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -122,6 +157,27 @@ void AMenuBroomPawn::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
 		{
 			MenuWidget->ButtonText->SetColorAndOpacity(StartSlateColor);
 		}
+	}
+}
+
+void AMenuBroomPawn::Move(const FInputActionValue& Value)
+{
+	float Movement = Value.Get<float>();
+
+	if (Controller != nullptr)
+	{
+		// find out which way is forward
+		const FRotator Rotation = Controller->GetControlRotation();
+
+		// get forward vector
+		const FVector UpDirection = FVector::ZAxisVector;
+
+		// add movement
+		FVector Translation = UpDirection * Movement;
+
+		// Need to do a check to make sure that the player is inside the screenspace
+		float Speed = 10.0f;
+		AddActorWorldOffset(Translation * Speed);
 	}
 }
 

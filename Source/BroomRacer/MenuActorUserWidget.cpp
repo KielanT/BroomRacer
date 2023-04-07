@@ -8,7 +8,8 @@ bool UMenuActorUserWidget::Initialize()
 {
 	Super::Initialize();
 
-	if(ButtonText != nullptr) return false;
+	if(ButtonText == nullptr) return false;
 
 	return true;
 }
+

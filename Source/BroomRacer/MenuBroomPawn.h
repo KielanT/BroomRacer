@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "InteractInterface.h"
+#include "InputActionValue.h"
 #include "MenuBroomPawn.generated.h"
 
 class ULevelSequence;
@@ -17,6 +18,15 @@ enum class EMoveState
 	None = 0,
 	FlyOfScreen,
 	Controlled,
+};
+
+UENUM()
+enum class EButtonType
+{
+	None = 0,
+	Play,
+	Settings,
+	Quit
 };
 
 UCLASS()
@@ -43,6 +53,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void LoadLevel();
+
+	EButtonType GetButtonType();
 	
 private:
 	UFUNCTION()
@@ -52,7 +64,7 @@ private:
 	UFUNCTION()
 		void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
-	
+	void Move(const FInputActionValue& Value);
 	
 private:
 	UPROPERTY(EditAnywhere)
@@ -76,6 +88,16 @@ private:
 	UPROPERTY(EditAnywhere)
 		EMoveState MoveState;
 
+	UPROPERTY(EditAnywhere)
+		EButtonType ButtonType;
+	
 	UPROPERTY()
 		FSlateColor StartSlateColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		class UInputMappingContext* DefaultMappingContext;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		class UInputAction* MoveAction;
+	
 };

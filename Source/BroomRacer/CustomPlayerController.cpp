@@ -3,6 +3,7 @@
 
 #include "CustomPlayerController.h"
 
+#include "BestLapSaveGame.h"
 #include "CheckpointActor.h"
 #include "GameOverUserWidget.h"
 #include "HUDWidget.h"
@@ -34,27 +35,41 @@ void ACustomPlayerController::OnGameOver()
 			const int Missed = numCheckpoints - PlayerPawn->CheckpointsPassed;
 			if(Missed > 0)
 			{
-				int penalty = Missed * 5;
+				float penalty = Missed * 5;
 				FString MissedText = "Hoops Missed: ";
 				MissedText.AppendInt(Missed);
 
-				FString TimePenalty = "Time Penalty: ";
-				TimePenalty.AppendInt( penalty);
+				FString TimePenalty = "Time Penalty: " + FString::SanitizeFloat(penalty);
 
-				FString LapTimeWithPenalty = "Time with Penalty: ";
-				LapTimeWithPenalty.AppendInt(PlayerPawn->PreviousLapTime + penalty);
+				FString LapTimeWithPenalty = "Time with Penalty: " + FString::SanitizeFloat(PlayerPawn->PreviousLapTime + penalty);
 				GameOverWidget->LapTimeWithPenaltyText->SetText(FText::FromString(LapTimeWithPenalty));
 				
 				GameOverWidget->MissedHoopsText->SetText(FText::FromString(MissedText));
 				GameOverWidget->TimePenaltyText->SetText(FText::FromString(TimePenalty));
 			}
 			
-			FString BestLapTime = "Best Time: ";
-			BestLapTime.AppendInt(PlayerPawn->BestLapTime);
+			FString BestLapTime = "Best Time: " + FString::SanitizeFloat(PlayerPawn->BestLapTime);
 			GameOverWidget->BestLapTimeText->SetText(FText::FromString(BestLapTime));
+
+			const FString MapName = UGameplayStatics::GetCurrentLevelName(GetWorld());
+			if(UBestLapSaveGame* LoadMapData = Cast<UBestLapSaveGame>(UGameplayStatics::LoadGameFromSlot("MapSave", 0)))
+			{
+				LoadMapData->MapsSaveData.Add(MapName, PlayerPawn->BestLapTime);
+				UGameplayStatics::AsyncSaveGameToSlot(LoadMapData, LoadMapData->SaveSlotName, LoadMapData->UserIndex);
+			}
+			else 
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Created new save"));
+				if(UBestLapSaveGame* NewSaveGame = Cast<UBestLapSaveGame>(UGameplayStatics::CreateSaveGameObject(UBestLapSaveGame::StaticClass())))
+				{
+					NewSaveGame->MapsSaveData.Add(MapName, PlayerPawn->BestLapTime);
+				
+					UGameplayStatics::AsyncSaveGameToSlot(NewSaveGame, NewSaveGame->SaveSlotName, NewSaveGame->UserIndex);
+				}
+			}
 			
-			FString LapTime = "Lap Time: ";
-			LapTime.AppendInt(PlayerPawn->PreviousLapTime);
+			
+			FString LapTime = "Lap Time: " + FString::SanitizeFloat(PlayerPawn->PreviousLapTime);
 			GameOverWidget->LapTimeText->SetText(FText::FromString(LapTime));
 
 			
@@ -75,6 +90,8 @@ void ACustomPlayerController::BeginPlay()
 	{
 		UHUDWidget* HUD = Cast<UHUDWidget>(CurrentWidget);
 		HUD->StartTimer(3, this);
+		
+		HUD->GameRaceTimerText->SetVisibility(ESlateVisibility::Hidden);
 		
 		HUD->PreviousLapTimeText->SetVisibility(ESlateVisibility::Hidden);
 		
@@ -125,9 +142,9 @@ void ACustomPlayerController::RaceTimer()
 			float Seconds = GetWorld()->GetTimerManager().GetTimerElapsed(handle);
 			FString SecondsText = FString::SanitizeFloat(Seconds);
 
+			HUD->GameRaceTimerText->SetVisibility(ESlateVisibility::Visible);
 			if(Seconds >= 0)
 			{
-				
 				FString SecondsStr = "Lap Time: " + SecondsText;
 				HUD->GameRaceTimerText->SetText(FText::FromString(SecondsStr));
 			}

@@ -24,6 +24,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		FString MapDetails;
+
+	UPROPERTY(EditAnywhere)
+		float BestLapTime;
 };
 
 UCLASS()

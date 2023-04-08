@@ -27,7 +27,7 @@ public:
 		TObjectPtr<UButton> MapButton;
 
 	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<UTextBlock> MapDisplayText;
+		TObjectPtr<UTextBlock> MapDisplayText;
 
 	UPROPERTY()
 		FString MapNameString;

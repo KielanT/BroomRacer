@@ -4,6 +4,7 @@
 #include "PlayerBroomPawn.h"
 
 
+#include "BestLapSaveGame.h"
 #include "CheckpointActor.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -39,6 +40,7 @@ APlayerBroomPawn::APlayerBroomPawn()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
+	CameraBoom->SetRelativeRotation(FRotator(0, -10.0f, 0));
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
 	// Create a follow camera
@@ -47,6 +49,10 @@ APlayerBroomPawn::APlayerBroomPawn()
 	Camera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Movement"));
+	FloatingPawnMovement->MaxSpeed = 3000.0f;
+	FloatingPawnMovement->Acceleration = 2000.0f;
+	FloatingPawnMovement->Deceleration = FloatingPawnMovement->Acceleration * 2.0f;
+	FloatingPawnMovement->TurningBoost = 50.0f;
 	DefaultSpeed = FloatingPawnMovement->MaxSpeed;
 	
 	AttachLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Attach Location"));
@@ -68,6 +74,20 @@ void APlayerBroomPawn::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	if(UBestLapSaveGame* LoadMapData = Cast<UBestLapSaveGame>(UGameplayStatics::LoadGameFromSlot("MapSave", 0)))
+	{
+		if(!LoadMapData->MapsSaveData.IsEmpty())
+		{
+			const FString MapName = UGameplayStatics::GetCurrentLevelName(GetWorld());
+
+			if(LoadMapData->MapsSaveData.Find(MapName))
+				BestLapTime = *LoadMapData->MapsSaveData.Find(MapName);
+
+			UE_LOG(LogTemp, Warning, TEXT("best time %f"), BestLapTime);
+		}
+	}
+	
 	
 	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &APlayerBroomPawn::OnComponentOverlap);
 	
@@ -149,7 +169,6 @@ void APlayerBroomPawn::Move(const FInputActionValue& Value)
 	{
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		// get forward vector
 		const FVector ForwardDirection = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
@@ -160,6 +179,7 @@ void APlayerBroomPawn::Move(const FInputActionValue& Value)
 		// add movement 
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
+		//AddControllerYawInput(MovementVector.X);
 	}
 }
 

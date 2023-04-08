@@ -59,7 +59,6 @@ void ACustomPlayerController::OnGameOver()
 			}
 			else 
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Created new save"));
 				if(UBestLapSaveGame* NewSaveGame = Cast<UBestLapSaveGame>(UGameplayStatics::CreateSaveGameObject(UBestLapSaveGame::StaticClass())))
 				{
 					NewSaveGame->MapsSaveData.Add(MapName, PlayerPawn->BestLapTime);
@@ -197,4 +196,20 @@ void ACustomPlayerController::SetCurrentLap(int currentLap)
 void ACustomPlayerController::SetMultipleLaps(bool isMultiple)
 {
 	bIsMultipleLaps = isMultiple;
+}
+
+void ACustomPlayerController::SetPauseMenu()
+{
+	ChangeWidget(PauseMenuClass);
+	bShowMouseCursor = true;
+	SetInputMode(FInputModeUIOnly());
+	SetPause(true);
+}
+
+void ACustomPlayerController::UnPause()
+{
+	ChangeWidget(HUDWidgetClass);
+	bShowMouseCursor = false;
+	SetInputMode(FInputModeGameOnly());
+	SetPause(false);
 }

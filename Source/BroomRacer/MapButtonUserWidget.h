@@ -31,6 +31,12 @@ public:
 
 	UPROPERTY()
 		FString MapNameString;
+
+	UPROPERTY()
+		FString MapDetailsString;
+
+	UPROPERTY()
+		float BestLapTime;
 	
 protected:
 	UFUNCTION()

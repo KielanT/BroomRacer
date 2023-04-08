@@ -6,6 +6,10 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayMenuUserWidget.generated.h"
 
+class ULoadingScreenUserWidget;
+class UBorder;
+class UCanvasPanel;
+class UTextBlock;
 class UButton;
 class UMapButtonUserWidget;
 class UVerticalBox;
@@ -25,7 +29,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		FString MapDetails;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 		float BestLapTime;
 };
 
@@ -41,12 +45,15 @@ protected:
 	
 private:
 	void DisplayMap();
+	void DisplayMapDetails();
 
 	UFUNCTION()
 		void OnButtonClicked(UMapButtonUserWidget* ButtonUserWidget);
 	
 	UFUNCTION()
 		void LoadSelectedLevel();
+
+	void LoadLevelAfterTime();
 	
 private:
 	UPROPERTY(EditAnywhere)
@@ -54,6 +61,9 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<UMapButtonUserWidget> MapButtonClass;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<ULoadingScreenUserWidget> LoadingScreenClass;
 	
 	UPROPERTY(meta = (BindWidget))
 		TObjectPtr<UVerticalBox> VerticalBoxTest;
@@ -61,6 +71,26 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		TObjectPtr<UButton> PlayButton;
 
+	// Map Display Name
+	UPROPERTY(meta = (BindWidget))
+		TObjectPtr<UTextBlock> DisplayName;
+	
+	UPROPERTY(meta = (BindWidget))
+		TObjectPtr<UTextBlock> MapDetails;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> BestLapTime;
+
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UBorder> MapDetailBorder;
+	
+
 	UPROPERTY()
 		TObjectPtr<UMapButtonUserWidget> SelectedMapButton = nullptr;
+
+	UPROPERTY(EditAnywhere)
+		float MinTimeDelay = 10.0f;
+	
+	FTimerHandle LoadingScreenMinTimer;
 };

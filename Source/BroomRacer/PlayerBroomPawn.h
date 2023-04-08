@@ -46,6 +46,8 @@ private:
 	
 	void Look(const FInputActionValue& Value);
 	
+	void Pause(const FInputActionValue& Value);
+	
 	UFUNCTION()
 		void OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult & SweepResult);
@@ -96,6 +98,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* LookAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		class UInputAction* PauseAction;
 	
 	UPROPERTY()
 		FTimerHandle LapTimeTimer;

@@ -22,6 +22,9 @@ public:
 	void SetMaxLaps(int maxLaps);
 	void SetCurrentLap(int currentLap);
 	void SetMultipleLaps(bool isMultiple);
+
+	void SetPauseMenu();
+	void UnPause();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -44,6 +47,9 @@ private:
 	UPROPERTY(EditAnywhere, Category ="User Interface")
 		TSubclassOf<UUserWidget> GameOverWidgetClass;
 
+	UPROPERTY(EditAnywhere, Category ="User Interface")
+		TSubclassOf<UUserWidget> PauseMenuClass;
+	
 	UPROPERTY()
 		UUserWidget* CurrentWidget;
 

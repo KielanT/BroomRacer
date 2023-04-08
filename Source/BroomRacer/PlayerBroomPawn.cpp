@@ -6,6 +6,7 @@
 
 #include "BestLapSaveGame.h"
 #include "CheckpointActor.h"
+#include "CustomPlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
@@ -83,8 +84,7 @@ void APlayerBroomPawn::BeginPlay()
 
 			if(LoadMapData->MapsSaveData.Find(MapName))
 				BestLapTime = *LoadMapData->MapsSaveData.Find(MapName);
-
-			UE_LOG(LogTemp, Warning, TEXT("best time %f"), BestLapTime);
+			
 		}
 	}
 	
@@ -112,6 +112,8 @@ void APlayerBroomPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerBroomPawn::Look);
+
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &APlayerBroomPawn::Pause);
 
 	}
 }
@@ -193,6 +195,15 @@ void APlayerBroomPawn::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void APlayerBroomPawn::Pause(const FInputActionValue& Value)
+{
+	if (ACustomPlayerController* PlayerController = Cast<ACustomPlayerController>(Controller))
+	{
+		PlayerController->SetPauseMenu();
+	}
+	
 }
 
 void APlayerBroomPawn::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

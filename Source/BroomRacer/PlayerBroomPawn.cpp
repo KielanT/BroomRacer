@@ -117,6 +117,9 @@ void APlayerBroomPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &APlayerBroomPawn::Pause);
 
 		EnhancedInputComponent->BindAction(AccelerationAction, ETriggerEvent::Triggered, this, &APlayerBroomPawn::Acceleration);
+		
+		EnhancedInputComponent->BindAction(BrakeAction, ETriggerEvent::Triggered, this, &APlayerBroomPawn::Brake);
+		EnhancedInputComponent->BindAction(BrakeAction, ETriggerEvent::Completed, this, &APlayerBroomPawn::OnBrakeRelease);
 
 	}
 }
@@ -223,6 +226,22 @@ void APlayerBroomPawn::Acceleration(const FInputActionValue& Value)
 	{
 		
 	}
+}
+
+void APlayerBroomPawn::Brake(const FInputActionValue& Value)
+{
+	float Brake = Value.Get<float>();
+	float BrakeMultiplier = 2.0f * Brake;
+	if (Controller != nullptr)
+	{
+		FloatingPawnMovement->Deceleration *= BrakeMultiplier;
+		// TODO calculate the braking vector instead
+	}
+}
+
+void APlayerBroomPawn::OnBrakeRelease(const FInputActionValue& Value)
+{
+	FloatingPawnMovement->Deceleration = FloatingPawnMovement->Acceleration;
 }
 
 void APlayerBroomPawn::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

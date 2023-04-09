@@ -52,6 +52,9 @@ private:
 
 	void Acceleration(const FInputActionValue& Value);
 	
+	void Brake(const FInputActionValue& Value);
+	void OnBrakeRelease(const FInputActionValue& Value);
+	
 	UFUNCTION()
 		void OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult & SweepResult);
@@ -108,12 +111,14 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* AccelerationAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		class UInputAction* BrakeAction;
 	
 	UPROPERTY()
 		FTimerHandle LapTimeTimer;
 
 	UPROPERTY()
 		float MaxLapTime = 3600; // Current Max lap time is an hour
-
-
+	
 };

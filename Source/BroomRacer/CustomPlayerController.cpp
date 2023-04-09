@@ -79,17 +79,15 @@ void ACustomPlayerController::OnGameOver()
 
 void ACustomPlayerController::OnPauseForCutScene()
 {
-	PrimaryActorTick.bCanEverTick = false;
 	CustomTimeDilation = 0;
 	
 }
 
 void ACustomPlayerController::OnUnPauseForCutScene()
 {
-	PrimaryActorTick.bCanEverTick = true;
 	CustomTimeDilation = 1;
 	ChangeWidget(HUDWidgetClass);
-	GetPawn()->DisableInput(this);
+	
 	
 	if(CurrentWidget->GetClass()->IsChildOf(UHUDWidget::StaticClass()))
 	{
@@ -106,7 +104,7 @@ void ACustomPlayerController::OnUnPauseForCutScene()
 		
 		HUD->CurrentLapsText->SetVisibility(ESlateVisibility::Hidden);
 	}
-	SetInputMode(FInputModeGameOnly());
+	
 
 	
 }
@@ -115,6 +113,8 @@ void ACustomPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpointActor::StaticClass(), CheckpointActors);
+	SetInputMode(FInputModeGameOnly());
+	GetPawn()->DisableInput(this);
 }
 
 void ACustomPlayerController::Tick(float DeltaSeconds)

@@ -37,6 +37,7 @@ private:
 
 	void OnInteract(const FInputActionValue& Value);
 
+
 public:
 	// Used for setting if the player is in menu or not
 	bool IsInGame = true;

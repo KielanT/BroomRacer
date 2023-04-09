@@ -18,6 +18,8 @@ class BROOMRACER_API ACustomPlayerController : public APlayerController, public 
 public:
 	virtual void OnGameStart() override;
 	virtual void OnGameOver() override;
+	virtual void OnPauseForCutScene() override;
+	virtual void OnUnPauseForCutScene() override;
 
 	void SetMaxLaps(int maxLaps);
 	void SetCurrentLap(int currentLap);

@@ -77,12 +77,18 @@ void ACustomPlayerController::OnGameOver()
 	}
 }
 
-void ACustomPlayerController::BeginPlay()
+void ACustomPlayerController::OnPauseForCutScene()
 {
-	Super::BeginPlay();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpointActor::StaticClass(), CheckpointActors);
-	ChangeWidget(HUDWidgetClass);
+	PrimaryActorTick.bCanEverTick = false;
+	CustomTimeDilation = 0;
+	
+}
 
+void ACustomPlayerController::OnUnPauseForCutScene()
+{
+	PrimaryActorTick.bCanEverTick = true;
+	CustomTimeDilation = 1;
+	ChangeWidget(HUDWidgetClass);
 	GetPawn()->DisableInput(this);
 	
 	if(CurrentWidget->GetClass()->IsChildOf(UHUDWidget::StaticClass()))
@@ -103,6 +109,12 @@ void ACustomPlayerController::BeginPlay()
 	SetInputMode(FInputModeGameOnly());
 
 	
+}
+
+void ACustomPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpointActor::StaticClass(), CheckpointActors);
 }
 
 void ACustomPlayerController::Tick(float DeltaSeconds)
@@ -132,7 +144,7 @@ void ACustomPlayerController::ChangeWidget(TSubclassOf<UUserWidget> WidgetClass)
 
 void ACustomPlayerController::RaceTimer()
 {
-	if(CurrentWidget->GetClass()->IsChildOf(UHUDWidget::StaticClass()))
+	if(CurrentWidget != nullptr && CurrentWidget->GetClass()->IsChildOf(UHUDWidget::StaticClass()))
 	{
 		if(APlayerBroomPawn* PlayerPawn = Cast<APlayerBroomPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
 		{

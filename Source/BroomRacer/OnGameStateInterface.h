@@ -7,7 +7,7 @@
 #include "OnGameStateInterface.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, Blueprintable)
 class UOnGameStateInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -27,4 +27,10 @@ public:
 	
 	UFUNCTION()
 		virtual void OnGameOver() = 0;
+
+	UFUNCTION()
+		virtual void OnPauseForCutScene() = 0;
+
+	UFUNCTION()
+		virtual void OnUnPauseForCutScene() = 0;
 };

@@ -97,8 +97,7 @@ void APlayerBroomPawn::BeginPlay()
 void APlayerBroomPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	UE_LOG(LogTemp, Warning, TEXT("Speed %f"), GetSpeedInMPH());
+
 }
 
 // Called to bind functionality to input

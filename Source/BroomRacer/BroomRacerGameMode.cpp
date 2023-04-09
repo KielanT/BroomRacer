@@ -25,8 +25,8 @@ ABroomRacerGameMode::ABroomRacerGameMode()
 void ABroomRacerGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	
+
+
 	
 	if(const TObjectPtr<ASplineTrackCreatorActor> Track = ASplineTrackCreatorActor::GetInstance())
 	{
@@ -37,6 +37,22 @@ void ABroomRacerGameMode::BeginPlay()
 	CustomPlayerController = Cast<ACustomPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	CustomPlayerController->SetMultipleLaps(bIsMultipleLaps);
 	CustomPlayerController->SetMaxLaps(MaxLaps);
+
+	
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), ActorsInWorld);
+	
+	for(auto Actor : ActorsInWorld)
+	{
+		if(UKismetSystemLibrary::DoesImplementInterface(Actor, UOnGameStateInterface::StaticClass()))
+		{
+			if(IOnGameStateInterface* Interface = Cast<IOnGameStateInterface>(Actor))
+			{
+				Interface->OnPauseForCutScene();
+			}
+			break;
+		}
+	}
+	
 }
 
 void ABroomRacerGameMode::Tick(float DeltaSeconds)
@@ -51,8 +67,7 @@ void ABroomRacerGameMode::RaceFinished()
 	// if multiple laps dont call interface until max laps is reached
 	if(!bIsMultipleLaps || CurrentLaps == MaxLaps)
 	{
-		TArray<AActor*> ActorsInWorld;
-		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), ActorsInWorld);
+		//UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), ActorsInWorld);
 	
 		for(auto Actor : ActorsInWorld)
 		{
@@ -73,5 +88,20 @@ void ABroomRacerGameMode::RaceFinished()
 	}
 	
 	
+}
+
+void ABroomRacerGameMode::UnPauseAfterCutscene()
+{
+	for(auto Actor : ActorsInWorld)
+	{
+		if(UKismetSystemLibrary::DoesImplementInterface(Actor, UOnGameStateInterface::StaticClass()))
+		{
+			if(IOnGameStateInterface* Interface = Cast<IOnGameStateInterface>(Actor))
+			{
+				Interface->OnUnPauseForCutScene();
+			}
+			break;
+		}
+	}
 }
 

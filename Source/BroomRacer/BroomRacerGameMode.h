@@ -26,6 +26,9 @@ public:
 	UFUNCTION()
 		void RaceFinished();
 
+	UFUNCTION(BlueprintCallable)
+		void UnPauseAfterCutscene();
+	
 private:
 	UPROPERTY()
 		int MaxLaps = 0;
@@ -39,6 +42,9 @@ private:
 	UPROPERTY()
 		ACustomPlayerController* CustomPlayerController;
 
+	UPROPERTY()
+		TArray<AActor*> ActorsInWorld;
+	
 };
 
 

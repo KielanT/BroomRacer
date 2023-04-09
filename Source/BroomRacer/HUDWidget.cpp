@@ -20,6 +20,8 @@ bool UHUDWidget::Initialize()
 	if(BestTimeText != nullptr) return false;
 	
 	if(CurrentLapsText != nullptr) return false;
+
+	if(SpeedMPHText != nullptr) return false;
 	
 	return true;
 }
@@ -27,7 +29,6 @@ bool UHUDWidget::Initialize()
 void UHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
-
 	
 	const int time = GetWorld()->GetTimerManager().GetTimerRemaining(RaceStartCountDownTimer);
 

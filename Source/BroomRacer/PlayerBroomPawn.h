@@ -40,6 +40,8 @@ public:
 
 	UFUNCTION()
 		FTimerHandle GetLapTimeHandle();
+
+	float GetSpeedInMPH();
 	
 private:
 	void Move(const FInputActionValue& Value);
@@ -47,6 +49,8 @@ private:
 	void Look(const FInputActionValue& Value);
 	
 	void Pause(const FInputActionValue& Value);
+
+	void Acceleration(const FInputActionValue& Value);
 	
 	UFUNCTION()
 		void OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
@@ -101,6 +105,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* PauseAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+		class UInputAction* AccelerationAction;
 	
 	UPROPERTY()
 		FTimerHandle LapTimeTimer;

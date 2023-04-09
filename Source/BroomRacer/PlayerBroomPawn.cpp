@@ -50,10 +50,10 @@ APlayerBroomPawn::APlayerBroomPawn()
 	Camera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Movement"));
-	FloatingPawnMovement->MaxSpeed = 3000.0f;
-	FloatingPawnMovement->Acceleration = 2000.0f;
-	FloatingPawnMovement->Deceleration = FloatingPawnMovement->Acceleration * 2.0f;
-	FloatingPawnMovement->TurningBoost = 50.0f;
+	FloatingPawnMovement->MaxSpeed =  6705.6f; // 150mph since unreal engine units are cm/s
+	FloatingPawnMovement->Acceleration = 6000.0f; 
+	FloatingPawnMovement->Deceleration = FloatingPawnMovement->Acceleration;
+	FloatingPawnMovement->TurningBoost = 5.0f;
 	DefaultSpeed = FloatingPawnMovement->MaxSpeed;
 	
 	AttachLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Attach Location"));
@@ -97,7 +97,8 @@ void APlayerBroomPawn::BeginPlay()
 void APlayerBroomPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
+	UE_LOG(LogTemp, Warning, TEXT("Speed %f"), GetSpeedInMPH());
 }
 
 // Called to bind functionality to input
@@ -114,6 +115,8 @@ void APlayerBroomPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerBroomPawn::Look);
 
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &APlayerBroomPawn::Pause);
+
+		EnhancedInputComponent->BindAction(AccelerationAction, ETriggerEvent::Triggered, this, &APlayerBroomPawn::Acceleration);
 
 	}
 }
@@ -163,6 +166,12 @@ FTimerHandle APlayerBroomPawn::GetLapTimeHandle()
 	return LapTimeTimer;
 }
 
+float APlayerBroomPawn::GetSpeedInMPH()
+{
+	const float MPHMultiplier = 44.704;
+	return FloatingPawnMovement->Velocity.Size() / MPHMultiplier;
+}
+
 void APlayerBroomPawn::Move(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -204,6 +213,16 @@ void APlayerBroomPawn::Pause(const FInputActionValue& Value)
 		PlayerController->SetPauseMenu();
 	}
 	
+}
+
+void APlayerBroomPawn::Acceleration(const FInputActionValue& Value)
+{
+	float AccelerationMultiplier = Value.Get<float>();
+	UE_LOG(LogTemp, Warning, TEXT("Accel %f"), AccelerationMultiplier);
+	if (Controller != nullptr)
+	{
+		
+	}
 }
 
 void APlayerBroomPawn::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

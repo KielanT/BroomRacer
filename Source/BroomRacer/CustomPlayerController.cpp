@@ -137,6 +137,9 @@ void ACustomPlayerController::RaceTimer()
 		if(APlayerBroomPawn* PlayerPawn = Cast<APlayerBroomPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
 		{
 			UHUDWidget* HUD = Cast<UHUDWidget>(CurrentWidget);
+
+			HUD->SpeedMPHText->SetText(FText::FromString(FString::FromInt(PlayerPawn->GetSpeedInMPH())));
+			
 			FTimerHandle handle = PlayerPawn->GetLapTimeHandle();
 			float Seconds = GetWorld()->GetTimerManager().GetTimerElapsed(handle);
 			FString SecondsText = FString::SanitizeFloat(Seconds);

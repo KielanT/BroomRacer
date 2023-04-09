@@ -45,6 +45,9 @@ public:
 	UPROPERTY(meta = (BindWidget))
 		TObjectPtr<UTextBlock> CurrentLapsText;
 
+	UPROPERTY(meta = (BindWidget))
+		TObjectPtr<UTextBlock> SpeedMPHText;
+
 private:
 	UPROPERTY()
 		FTimerHandle RaceStartCountDownTimer;

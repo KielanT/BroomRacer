@@ -30,6 +30,9 @@ public:
 		void UnPauseAfterCutscene();
 	
 private:
+	UPROPERTY(EditAnywhere)
+	UAudioComponent* AudioComponent;
+	
 	UPROPERTY()
 		int MaxLaps = 0;
 
@@ -44,6 +47,7 @@ private:
 
 	UPROPERTY()
 		TArray<AActor*> ActorsInWorld;
+	
 	
 };
 

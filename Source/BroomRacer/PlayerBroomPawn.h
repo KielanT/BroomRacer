@@ -100,6 +100,9 @@ private:
 	UPROPERTY(EditAnywhere)
 		class UBoxComponent* BoxCollision;
 
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* AudioComponent;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputMappingContext* DefaultMappingContext;
 	
@@ -129,5 +132,4 @@ private:
 
 	float DecelerationMultiply = 1.0f;
 
-	
 };

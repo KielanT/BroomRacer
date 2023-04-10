@@ -7,6 +7,7 @@
 #include "OnGameStateInterface.h"
 #include "PlayerBroomPawn.h"
 #include "SplineTrackCreatorActor.h"
+#include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -20,12 +21,14 @@ ABroomRacerGameMode::ABroomRacerGameMode()
 	}
 
 	PrimaryActorTick.bCanEverTick = true;
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Background Musci"));
 }
 
 void ABroomRacerGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
+	AudioComponent->Play();
 
 	
 	if(const TObjectPtr<ASplineTrackCreatorActor> Track = ASplineTrackCreatorActor::GetInstance())

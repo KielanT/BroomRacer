@@ -10,6 +10,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -67,6 +68,9 @@ APlayerBroomPawn::APlayerBroomPawn()
 	
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Col"));
 	BoxCollision->SetupAttachment(RootComponent);
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
+	AudioComponent->bAlwaysPlay = false;
 }
 
 // Called when the game starts or when spawned
@@ -279,7 +283,14 @@ void APlayerBroomPawn::OnRelease(const FInputActionValue& Value)
 void APlayerBroomPawn::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
+	if(OtherActor->GetClass()->IsChildOf(ACheckpointActor::StaticClass()))
+	{
+		// Stops calling for each component on other actor
+		if(OtherComp->GetClass()->IsChildOf(UStaticMeshComponent::StaticClass()))
+		{
+			AudioComponent->Play();
+		}
+	}
 }
 
 void APlayerBroomPawn::OnLapTimerFinished()
@@ -298,11 +309,6 @@ void APlayerBroomPawn::SpeedEffectFromFOV()
 		PlayerController->PlayerCameraManager->SetFOV(SpeedFOV);
 	}
 
-	
-	
-
-
-	
 	
 }
 

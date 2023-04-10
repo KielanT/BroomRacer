@@ -76,6 +76,7 @@ void ABroomRacerGameMode::RaceFinished()
 				if(IOnGameStateInterface* Interface = Cast<IOnGameStateInterface>(Actor))
 				{
 					Interface->OnGameOver();
+					
 				}
 				break;
 			}

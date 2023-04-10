@@ -20,6 +20,8 @@ void ACustomPlayerController::OnGameStart()
 void ACustomPlayerController::OnGameOver()
 {
 	GetPawn()->DisableInput(this);
+	SetInputMode(FInputModeUIOnly());
+	bShowMouseCursor = true;
 	ChangeWidget(GameOverWidgetClass);
 	if(CurrentWidget->GetClass()->IsChildOf(UGameOverUserWidget::StaticClass()))
 	{

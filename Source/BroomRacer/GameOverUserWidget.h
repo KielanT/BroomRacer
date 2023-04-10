@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GameOverUserWidget.generated.h"
 
+class UButton;
 class UTextBlock;
 
 UCLASS()
@@ -16,6 +17,13 @@ class BROOMRACER_API UGameOverUserWidget : public UUserWidget
 protected:
 	virtual bool Initialize() override;
 
+private:
+	UFUNCTION()
+		void Restart();
+
+	UFUNCTION()
+		void Quit();
+	
 public:
 	UPROPERTY(meta = (BindWidget))
 		TObjectPtr<UTextBlock> MissedHoopsText;
@@ -31,4 +39,10 @@ public:
 	
 	UPROPERTY(meta = (BindWidget))
 		TObjectPtr<UTextBlock> LapTimeWithPenaltyText;
+
+	UPROPERTY(meta = (BindWidget))
+		TObjectPtr<UButton> RestartButton;
+
+	UPROPERTY(meta = (BindWidget))
+		TObjectPtr<UButton> QuitButton;
 };

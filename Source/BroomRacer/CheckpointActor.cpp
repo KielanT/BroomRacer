@@ -65,6 +65,7 @@ void ACheckpointActor::OnEndOverlap(UPrimitiveComponent* OverlapComponent, AActo
 			APlayerBroomPawn* Actor = Cast<APlayerBroomPawn>(OtherActor);
 			Actor->CheckpointsPassed++;
 			ActorsPassedThrough.Add(OtherActor);
+			UE_LOG(LogTemp, Warning, TEXT("Passed"));
 		}
 	}
 }

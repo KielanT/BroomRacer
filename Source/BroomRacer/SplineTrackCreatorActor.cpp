@@ -29,7 +29,9 @@ void ASplineTrackCreatorActor::BeginPlay()
 
 	if(!UseConstructionScript)
 		CreateTrack();
-	
+
+	// Make sure that the other maps are not pointing at the wrong spline
+	Instance = nullptr;
 }
 
 void ASplineTrackCreatorActor::OnConstruction(const FTransform& Transform)

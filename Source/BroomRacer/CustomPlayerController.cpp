@@ -23,6 +23,10 @@ void ACustomPlayerController::OnGameOver()
 	SetInputMode(FInputModeUIOnly());
 	bShowMouseCursor = true;
 	ChangeWidget(GameOverWidgetClass);
+
+	// Better to do this at begin play but is not finding any checkpoints
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpointActor::StaticClass(), CheckpointActors);
+	
 	if(CurrentWidget->GetClass()->IsChildOf(UGameOverUserWidget::StaticClass()))
 	{
 		if(APlayerBroomPawn* PlayerPawn = Cast<APlayerBroomPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
@@ -35,6 +39,8 @@ void ACustomPlayerController::OnGameOver()
 			}
 			
 			const int Missed = numCheckpoints - PlayerPawn->CheckpointsPassed;
+			UE_LOG(LogTemp, Warning, TEXT("Missed Hoops %d"), Missed);
+			UE_LOG(LogTemp, Warning, TEXT("number of checkpoints %d"), CheckpointActors.Num());
 			if(Missed > 0)
 			{
 				float penalty = Missed * 5;
@@ -114,7 +120,8 @@ void ACustomPlayerController::OnUnPauseForCutScene()
 void ACustomPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpointActor::StaticClass(), CheckpointActors);
+	
+	
 	SetInputMode(FInputModeGameOnly());
 	GetPawn()->DisableInput(this);
 }

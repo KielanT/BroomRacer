@@ -76,6 +76,8 @@ void AMenuBroomPawn::Interact(APawn* InteractCharacter)
 {
 	FAttachmentTransformRules Rules = FAttachmentTransformRules::KeepWorldTransform;
 	InteractCharacter->AttachToActor(this, Rules);
+	MountedPawnLocation = InteractCharacter->GetActorLocation();
+	MountedPawnRotation = InteractCharacter->GetActorRotation();
 	InteractCharacter->SetActorLocation(AttachLocation->GetComponentLocation());
 	InteractCharacter->SetActorRotation(AttachLocation->GetComponentRotation());
 	AMenuPlayerController* MenuController = Cast<AMenuPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
@@ -119,7 +121,29 @@ void AMenuBroomPawn::Interact(APawn* InteractCharacter)
 	{
 		MenuController->ShowSettingsMenu();
 	}
+	MountedPawn = InteractCharacter;
+}
+
+void AMenuBroomPawn::UnMount()
+{
+	AMenuPlayerController* MenuController = Cast<AMenuPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	MenuController->Possess(MountedPawn);
 	
+	MenuButtonWidget->SetVisibility(true);
+	MenuController->SetInputMode(FInputModeGameOnly());
+	MenuController->bShowMouseCursor = true;
+
+	APlayerCharacter* CharacterPawn = Cast<APlayerCharacter>(MountedPawn);
+	if(CharacterPawn)
+	{
+		FDetachmentTransformRules DetachmentRules = FDetachmentTransformRules::KeepRelativeTransform;
+		CharacterPawn->DetachFromActor(DetachmentRules);
+		CharacterPawn->IsMounted = false;
+		CharacterPawn->SetActorLocation(MountedPawnLocation);
+		CharacterPawn->SetActorRotation(MountedPawnRotation);
+		MenuController->SetControlRotation(MountedPawnRotation); // Stops the controls from being inverted
+		
+	}
 }
 
 void AMenuBroomPawn::LoadLevel()

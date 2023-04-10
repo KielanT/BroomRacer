@@ -52,9 +52,14 @@ public:
 	virtual void Interact(APawn* InteractCharacter) override;
 
 	UFUNCTION(BlueprintCallable)
+		void UnMount();
+
+	UFUNCTION(BlueprintCallable)
 		void LoadLevel();
 
 	EButtonType GetButtonType();
+
+	
 	
 private:
 	UFUNCTION()
@@ -99,5 +104,13 @@ private:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputAction* MoveAction;
+
+	UPROPERTY()
+		APawn* MountedPawn;
+
+	UPROPERTY()
+		FVector MountedPawnLocation;
 	
+	UPROPERTY()
+		FRotator MountedPawnRotation;
 };

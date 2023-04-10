@@ -32,6 +32,8 @@ void AMenuPlayerController::ShowPlayMenu()
 void AMenuPlayerController::ShowSettingsMenu()
 {
 	ChangeWidget(SettingsClass);
+	SetInputMode(FInputModeGameAndUI());
+	bShowMouseCursor = true;
 }
 
 void AMenuPlayerController::BeginPlay()

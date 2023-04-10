@@ -51,9 +51,10 @@ private:
 	void Pause(const FInputActionValue& Value);
 
 	void Acceleration(const FInputActionValue& Value);
+	void OnAccelerationRelease(const FInputActionValue& Value);
 	
 	void Brake(const FInputActionValue& Value);
-	void OnBrakeRelease(const FInputActionValue& Value);
+	void OnRelease(const FInputActionValue& Value);
 	
 	UFUNCTION()
 		void OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
@@ -61,6 +62,8 @@ private:
 
 	UFUNCTION()
 		void OnLapTimerFinished();
+
+	void SpeedEffectFromFOV();
 	
 public:
 	UPROPERTY()
@@ -120,5 +123,11 @@ private:
 
 	UPROPERTY()
 		float MaxLapTime = 3600; // Current Max lap time is an hour
+
+	float DefualtAcceleration;
+	float MaxAcceleration;
+
+	float DecelerationMultiply = 1.0f;
+
 	
 };

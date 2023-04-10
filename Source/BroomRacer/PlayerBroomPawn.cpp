@@ -42,19 +42,25 @@ APlayerBroomPawn::APlayerBroomPawn()
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
 	CameraBoom->SetRelativeRotation(FRotator(0, -10.0f, 0));
-	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	CameraBoom->bUsePawnControlRotation = false; // Rotate the arm based on the controller
 
 	// Create a follow camera
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	Camera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	Camera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	Camera->PostProcessSettings.bOverride_MotionBlurAmount = true;
+	Camera->PostProcessSettings.bOverride_MotionBlurMax = true;
+	Camera->PostProcessSettings.MotionBlurAmount = 0.5f;
+	Camera->PostProcessSettings.MotionBlurMax = 2.0f;
 
 	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Movement"));
 	FloatingPawnMovement->MaxSpeed =  6705.6f; // 150mph since unreal engine units are cm/s
-	FloatingPawnMovement->Acceleration = 6000.0f; 
-	FloatingPawnMovement->Deceleration = FloatingPawnMovement->Acceleration;
+	FloatingPawnMovement->Acceleration = 1000.0f; 
+	FloatingPawnMovement->Deceleration = FloatingPawnMovement->Acceleration * DecelerationMultiply;
 	FloatingPawnMovement->TurningBoost = 5.0f;
 	DefaultSpeed = FloatingPawnMovement->MaxSpeed;
+	DefualtAcceleration = FloatingPawnMovement->Acceleration;
+	MaxAcceleration = FloatingPawnMovement->Acceleration * 3.0f;
 	
 	AttachLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Attach Location"));
 	AttachLocation->SetupAttachment(RootComponent);
@@ -98,6 +104,7 @@ void APlayerBroomPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	SpeedEffectFromFOV();
 }
 
 // Called to bind functionality to input
@@ -116,9 +123,11 @@ void APlayerBroomPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &APlayerBroomPawn::Pause);
 
 		EnhancedInputComponent->BindAction(AccelerationAction, ETriggerEvent::Triggered, this, &APlayerBroomPawn::Acceleration);
+		EnhancedInputComponent->BindAction(AccelerationAction, ETriggerEvent::Completed, this, &APlayerBroomPawn::OnAccelerationRelease);
 		
 		EnhancedInputComponent->BindAction(BrakeAction, ETriggerEvent::Triggered, this, &APlayerBroomPawn::Brake);
-		EnhancedInputComponent->BindAction(BrakeAction, ETriggerEvent::Completed, this, &APlayerBroomPawn::OnBrakeRelease);
+		EnhancedInputComponent->BindAction(BrakeAction, ETriggerEvent::Completed, this, &APlayerBroomPawn::OnRelease);
+		
 
 	}
 }
@@ -189,8 +198,10 @@ void APlayerBroomPawn::Move(const FInputActionValue& Value)
 		// get right vector 
 		const FVector RightDirection = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
 
-		// add movement 
-		AddMovementInput(ForwardDirection, MovementVector.Y);
+		// add movement
+		if( MovementVector.Y > 0.1f)
+			AddMovementInput(ForwardDirection, MovementVector.Y);
+
 		AddMovementInput(RightDirection, MovementVector.X);
 		//AddControllerYawInput(MovementVector.X);
 	}
@@ -219,28 +230,49 @@ void APlayerBroomPawn::Pause(const FInputActionValue& Value)
 
 void APlayerBroomPawn::Acceleration(const FInputActionValue& Value)
 {
-	float AccelerationMultiplier = Value.Get<float>();
-	UE_LOG(LogTemp, Warning, TEXT("Accel %f"), AccelerationMultiplier);
+	float Accel = Value.Get<float>();
 	if (Controller != nullptr)
 	{
-		
+		FloatingPawnMovement->Acceleration = MaxAcceleration * Accel;
 	}
+}
+
+void APlayerBroomPawn::OnAccelerationRelease(const FInputActionValue& Value)
+{
+	FloatingPawnMovement->Acceleration = DefualtAcceleration;
 }
 
 void APlayerBroomPawn::Brake(const FInputActionValue& Value)
 {
 	float Brake = Value.Get<float>();
-	float BrakeMultiplier = 2.0f * Brake;
+	//float BrakeMultiplier = 1.0f * Brake;
 	if (Controller != nullptr)
 	{
-		FloatingPawnMovement->Deceleration *= BrakeMultiplier;
+		//FloatingPawnMovement->Deceleration *= BrakeMultiplier;
 		// TODO calculate the braking vector instead
+		FVector CurrentVelocity = FloatingPawnMovement->Velocity;
+
+		//const FRotator Rotation = Controller->GetControlRotation();
+		//const FVector MovementDir = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
+		const FVector MovementDir = CurrentVelocity.GetSafeNormal();
+
+
+		if(CurrentVelocity.IsNearlyZero())
+		{
+			return;
+		}
+
+		float BrackingFactor = 0.1f;
+		FVector BrakingVec = -MovementDir * (FloatingPawnMovement->MaxSpeed / 10.0f) * BrackingFactor;
+		FloatingPawnMovement->Deceleration = BrakingVec.Size() / GetWorld()->DeltaTimeSeconds;
+		
 	}
 }
 
-void APlayerBroomPawn::OnBrakeRelease(const FInputActionValue& Value)
+void APlayerBroomPawn::OnRelease(const FInputActionValue& Value)
 {
-	FloatingPawnMovement->Deceleration = FloatingPawnMovement->Acceleration;
+	
+	FloatingPawnMovement->Deceleration = DefualtAcceleration * DecelerationMultiply;
 }
 
 void APlayerBroomPawn::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -253,5 +285,23 @@ void APlayerBroomPawn::OnLapTimerFinished()
 {
 	// Should be rarely called
 	// Bring up some sort of "Are you there menu"
+}
+
+void APlayerBroomPawn::SpeedEffectFromFOV()
+{
+	float CurrentSpeed = FloatingPawnMovement->Velocity.Size();
+	float SpeedFOV = FMath::Lerp(90.0f, 110.0f, CurrentSpeed / FloatingPawnMovement->MaxSpeed);
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		PlayerController->PlayerCameraManager->SetFOV(SpeedFOV);
+	}
+
+	
+	
+
+
+	
+	
 }
 

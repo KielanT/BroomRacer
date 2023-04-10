@@ -26,7 +26,7 @@ public:
 	UFUNCTION()
 		void RaceFinished();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Exec)
 		void UnPauseAfterCutscene();
 	
 private:

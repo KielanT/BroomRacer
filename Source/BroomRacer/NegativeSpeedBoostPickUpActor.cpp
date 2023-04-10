@@ -15,7 +15,8 @@ void ANegativeSpeedBoostPickUpActor::OnPickUp(APawn* Pawn)
 		BroomPawn = Cast<APlayerBroomPawn>(Pawn);
 		PreviousSpeed = BroomPawn->DefaultSpeed;
 		BroomPawn->GetMovement()->MaxSpeed /= SpeedMultiplier;
-
+		UE_LOG(LogTemp, Warning, TEXT("max speed = %f"), BroomPawn->GetMovement()->MaxSpeed);
+		UE_LOG(LogTemp, Warning, TEXT("max cal speed = %f"), BroomPawn->GetMovement()->MaxSpeed /= SpeedMultiplier);
 		GetWorld()->GetTimerManager().SetTimer(SpeedBoostTimer, this, &ANegativeSpeedBoostPickUpActor::OnTimerFinished, SpeedBoostRate, false);
 		
 		// Hides and disables the pickup

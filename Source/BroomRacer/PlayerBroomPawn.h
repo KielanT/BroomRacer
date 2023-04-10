@@ -77,6 +77,9 @@ public:
 
 	UPROPERTY()
 		float DefaultSpeed;
+
+	UPROPERTY()
+		float DefaultAcceleration;
 	
 private:
 	UPROPERTY(EditAnywhere)
@@ -127,7 +130,7 @@ private:
 	UPROPERTY()
 		float MaxLapTime = 3600; // Current Max lap time is an hour
 
-	float DefualtAcceleration;
+	
 	float MaxAcceleration;
 
 	float DecelerationMultiply = 1.0f;

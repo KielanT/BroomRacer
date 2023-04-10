@@ -40,4 +40,7 @@ private:
 	
 	UPROPERTY()
 		float PreviousSpeed;
+
+	UPROPERTY()
+		float PreviousAcceleration;
 };

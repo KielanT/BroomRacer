@@ -14,7 +14,11 @@ void ASpeedBoostPickUpActor::OnPickUp(APawn* Pawn)
 	{
 		BroomPawn = Cast<APlayerBroomPawn>(Pawn);
 		PreviousSpeed = BroomPawn->DefaultSpeed;
+		PreviousAcceleration = BroomPawn->DefaultAcceleration;
 		BroomPawn->GetMovement()->MaxSpeed *= SpeedMultiplier;
+		BroomPawn->GetMovement()->Acceleration *= SpeedMultiplier;
+		UE_LOG(LogTemp, Warning, TEXT("max speed = %f"), BroomPawn->GetMovement()->MaxSpeed);
+		UE_LOG(LogTemp, Warning, TEXT("max cal speed = %f"), BroomPawn->GetMovement()->MaxSpeed *= SpeedMultiplier);
 
 		GetWorld()->GetTimerManager().SetTimer(SpeedBoostTimer, this, &ASpeedBoostPickUpActor::OnTimerFinished, SpeedBoostRate, false);
 		
@@ -33,5 +37,6 @@ void ASpeedBoostPickUpActor::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
 void ASpeedBoostPickUpActor::OnTimerFinished()
 {
 	BroomPawn->GetMovement()->MaxSpeed = PreviousSpeed;
+	BroomPawn->GetMovement()->Acceleration = PreviousAcceleration;
 	Destroy();
 }

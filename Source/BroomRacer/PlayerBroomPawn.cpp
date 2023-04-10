@@ -60,7 +60,7 @@ APlayerBroomPawn::APlayerBroomPawn()
 	FloatingPawnMovement->Deceleration = FloatingPawnMovement->Acceleration * DecelerationMultiply;
 	FloatingPawnMovement->TurningBoost = 5.0f;
 	DefaultSpeed = FloatingPawnMovement->MaxSpeed;
-	DefualtAcceleration = FloatingPawnMovement->Acceleration;
+	DefaultAcceleration = FloatingPawnMovement->Acceleration;
 	MaxAcceleration = FloatingPawnMovement->Acceleration * 3.0f;
 	
 	AttachLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Attach Location"));
@@ -251,7 +251,7 @@ void APlayerBroomPawn::Acceleration(const FInputActionValue& Value)
 
 void APlayerBroomPawn::OnAccelerationRelease(const FInputActionValue& Value)
 {
-	FloatingPawnMovement->Acceleration = DefualtAcceleration;
+	FloatingPawnMovement->Acceleration = DefaultAcceleration;
 }
 
 void APlayerBroomPawn::Brake(const FInputActionValue& Value)
@@ -277,7 +277,7 @@ void APlayerBroomPawn::Brake(const FInputActionValue& Value)
 
 void APlayerBroomPawn::OnRelease(const FInputActionValue& Value)
 {
-	FloatingPawnMovement->Deceleration = DefualtAcceleration * DecelerationMultiply;
+	FloatingPawnMovement->Deceleration = DefaultAcceleration * DecelerationMultiply;
 }
 
 void APlayerBroomPawn::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

@@ -233,7 +233,15 @@ void APlayerBroomPawn::Acceleration(const FInputActionValue& Value)
 	float Accel = Value.Get<float>();
 	if (Controller != nullptr)
 	{
-		FloatingPawnMovement->Acceleration = MaxAcceleration * Accel;
+		//FloatingPawnMovement->Acceleration = MaxAcceleration * Accel;
+		
+		FVector CurrentVelocity = FloatingPawnMovement->Velocity;
+		const FVector MovementDir = CurrentVelocity.GetSafeNormal();
+
+		float AccelSpeed = 100.0f;
+		FVector AccelVec = MovementDir * AccelSpeed * Accel;
+		FloatingPawnMovement->Acceleration = AccelVec.Size() / GetWorld()->DeltaTimeSeconds;
+		
 	}
 }
 
@@ -245,15 +253,9 @@ void APlayerBroomPawn::OnAccelerationRelease(const FInputActionValue& Value)
 void APlayerBroomPawn::Brake(const FInputActionValue& Value)
 {
 	float Brake = Value.Get<float>();
-	//float BrakeMultiplier = 1.0f * Brake;
 	if (Controller != nullptr)
 	{
-		//FloatingPawnMovement->Deceleration *= BrakeMultiplier;
-		// TODO calculate the braking vector instead
 		FVector CurrentVelocity = FloatingPawnMovement->Velocity;
-
-		//const FRotator Rotation = Controller->GetControlRotation();
-		//const FVector MovementDir = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
 		const FVector MovementDir = CurrentVelocity.GetSafeNormal();
 
 
@@ -271,7 +273,6 @@ void APlayerBroomPawn::Brake(const FInputActionValue& Value)
 
 void APlayerBroomPawn::OnRelease(const FInputActionValue& Value)
 {
-	
 	FloatingPawnMovement->Deceleration = DefualtAcceleration * DecelerationMultiply;
 }
 

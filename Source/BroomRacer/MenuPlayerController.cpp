@@ -39,6 +39,9 @@ void AMenuPlayerController::ShowSettingsMenu()
 void AMenuPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetInputMode(FInputModeGameOnly());
+	bShowMouseCursor = false;
 	
 	if(CameraClass)
 	{

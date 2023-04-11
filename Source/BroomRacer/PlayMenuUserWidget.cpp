@@ -12,6 +12,7 @@
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "LoadingScreenUserWidget.h"
+#include "MainGameInstance.h"
 
 bool UPlayMenuUserWidget::Initialize()
 {
@@ -37,6 +38,9 @@ void UPlayMenuUserWidget::NativeConstruct()
 
 	DisplayMap();
 	MapDetailBorder->SetVisibility(ESlateVisibility::Hidden);
+
+	
+	
 }
 
 void UPlayMenuUserWidget::DisplayMap()
@@ -44,6 +48,7 @@ void UPlayMenuUserWidget::DisplayMap()
 	VerticalBoxTest->ClearChildren();
 	if(MapButtonClass)
 	{
+		int i = 0;
 		for(auto& MapData : MapArray)
 		{
 			UMapButtonUserWidget* MapWidget = WidgetTree->ConstructWidget<UMapButtonUserWidget>(MapButtonClass);
@@ -51,6 +56,7 @@ void UPlayMenuUserWidget::DisplayMap()
 			MapWidget->MapNameString = MapData.MapName;
 			MapWidget->MapDisplayText->SetText(FText::FromString(MapData.MapDisplayName));
 			MapWidget->MapDetailsString = MapData.MapDetails;
+			MapWidget->MAPIndex = i;
 
 			if(UBestLapSaveGame* LoadMapData = Cast<UBestLapSaveGame>(UGameplayStatics::LoadGameFromSlot("MapSave", 0)))
 			{
@@ -61,8 +67,10 @@ void UPlayMenuUserWidget::DisplayMap()
 				}
 			}
 			VerticalBoxTest->AddChild(MapWidget);
+			i++;
 		}
 	}
+
 	
 
 }
@@ -116,7 +124,13 @@ void UPlayMenuUserWidget::LoadSelectedLevel()
 		//{
 			UGameplayStatics::OpenLevel(GetWorld(), FName(SelectedMapButton->MapNameString));
 		//}
-		
+		UMainGameInstance* GameInstanceRef = Cast<UMainGameInstance>(GetGameInstance());
+		if(GameInstanceRef)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Found Ref"));
+			GameInstanceRef->bIsMultipleLaps = MapArray[SelectedMapButton->MAPIndex].bIsMultipleLaps;
+			GameInstanceRef->MaxLaps = MapArray[SelectedMapButton->MAPIndex].MaxLaps;
+		}
 	}
 }
 

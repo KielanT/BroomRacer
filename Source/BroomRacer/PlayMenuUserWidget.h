@@ -31,6 +31,12 @@ public:
 
 	UPROPERTY()
 		float BestLapTime;
+
+	UPROPERTY(EditAnywhere)
+		bool bIsMultipleLaps;
+
+	UPROPERTY(EditAnywhere)
+		int MaxLaps;
 };
 
 UCLASS()

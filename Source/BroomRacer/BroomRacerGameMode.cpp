@@ -4,6 +4,7 @@
 
 #include "CheckpointActor.h"
 #include "CustomPlayerController.h"
+#include "MainGameInstance.h"
 #include "OnGameStateInterface.h"
 #include "PlayerBroomPawn.h"
 #include "SplineTrackCreatorActor.h"
@@ -30,12 +31,21 @@ void ABroomRacerGameMode::BeginPlay()
 	Super::BeginPlay();
 	AudioComponent->Play();
 
-	
-	if(const TObjectPtr<ASplineTrackCreatorActor> Track = ASplineTrackCreatorActor::GetInstance())
+	// Works for testing levels individual, does not work when from level
+	//if(const TObjectPtr<ASplineTrackCreatorActor> Track = ASplineTrackCreatorActor::GetInstance())
+	//{
+	//	bIsMultipleLaps = Track->IsMulitpleLaps();
+	//	MaxLaps = Track->GetLaps();
+	//}
+
+	UMainGameInstance* GameInstanceRef = Cast<UMainGameInstance>(GetGameInstance());
+	if(GameInstanceRef)
 	{
-		bIsMultipleLaps = Track->IsMulitpleLaps();
-		MaxLaps = Track->GetLaps();
+		UE_LOG(LogTemp, Warning, TEXT("Found Ref"));
+		bIsMultipleLaps = GameInstanceRef->bIsMultipleLaps;
+		MaxLaps = GameInstanceRef->MaxLaps;
 	}
+	
 
 	CustomPlayerController = Cast<ACustomPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	CustomPlayerController->SetMultipleLaps(bIsMultipleLaps);

@@ -48,7 +48,6 @@ void ASplineTrackCreatorActor::OnConstruction(const FTransform& Transform)
 void ASplineTrackCreatorActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 bool ASplineTrackCreatorActor::IsMulitpleLaps()
@@ -65,8 +64,13 @@ TObjectPtr<ASplineTrackCreatorActor> ASplineTrackCreatorActor::GetInstance()
 {
 	if(Instance == nullptr)
 	{
+		
 		UWorld* WorldRef = GEngine->GameViewport->GetWorld();
 		Instance = Cast<ASplineTrackCreatorActor>(UGameplayStatics::GetActorOfClass(WorldRef, StaticClass()));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("instanse is spline found "));
 	}
 	
 	// If still null after trying to find the actor then return nullptr (less nested if statements and less checks)
@@ -74,6 +78,8 @@ TObjectPtr<ASplineTrackCreatorActor> ASplineTrackCreatorActor::GetInstance()
 	{
 		return nullptr;
 	}
+
+	
 	
 	return Instance;
 }

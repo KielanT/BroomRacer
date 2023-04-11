@@ -37,6 +37,9 @@ public:
 
 	UPROPERTY()
 		float BestLapTime;
+
+	UPROPERTY()
+	int MAPIndex;
 	
 protected:
 	UFUNCTION()

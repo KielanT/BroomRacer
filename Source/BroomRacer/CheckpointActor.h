@@ -29,6 +29,9 @@ private:
 	UFUNCTION()
 		void OnEndOverlap(UPrimitiveComponent * OverlapComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex);
 
+	UFUNCTION()
+		void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+			bool bFromSweep, const FHitResult & SweepResult);
 
 public:
 	UPROPERTY(VisibleAnywhere)
@@ -47,5 +50,6 @@ private:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* CheckpointCollision;
 	
-	
+	UPROPERTY(EditAnywhere)
+		UAudioComponent* AudioComponent;
 };

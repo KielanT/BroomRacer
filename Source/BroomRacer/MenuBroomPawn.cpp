@@ -50,6 +50,12 @@ void AMenuBroomPawn::BeginPlay()
 	{
 		StartSlateColor = MenuWidget->ButtonText->GetColorAndOpacity();
 	}
+	if (AMenuPlayerController* MenuController = Cast<AMenuPlayerController>(Controller))
+	{
+		// Stops the controls from going inverted
+		MenuController->SetControlRotation(GetActorRotation());
+		
+	}
 }
 
 // Called every frame

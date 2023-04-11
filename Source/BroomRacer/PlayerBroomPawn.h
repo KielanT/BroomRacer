@@ -11,6 +11,7 @@
 class ABroomRacerGameMode;
 class UCapsuleComponent;
 class UFloatingPawnMovement;
+
 UCLASS()
 class BROOMRACER_API APlayerBroomPawn : public APawn, public IInteractInterface
 {
@@ -102,9 +103,6 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 		class UBoxComponent* BoxCollision;
-
-	UPROPERTY(EditAnywhere)
-		UAudioComponent* AudioComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 		class UInputMappingContext* DefaultMappingContext;

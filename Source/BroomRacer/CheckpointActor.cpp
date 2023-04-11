@@ -5,6 +5,7 @@
 
 #include "PlayerBroomPawn.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 ACheckpointActor::ACheckpointActor()
@@ -20,6 +21,9 @@ ACheckpointActor::ACheckpointActor()
 
 	CheckpointCollision = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Checkpoint Collision"));
 	CheckpointCollision->SetupAttachment(StaticMeshComponent);
+	
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
+	AudioComponent->bAlwaysPlay = false;
 }
 
 // Called when the game starts or when spawned
@@ -28,6 +32,7 @@ void ACheckpointActor::BeginPlay()
 	Super::BeginPlay();
 	
 	CheckpointCollision->OnComponentEndOverlap.AddDynamic(this, &ACheckpointActor::OnEndOverlap);
+	CheckpointCollision->OnComponentBeginOverlap.AddDynamic(this, &ACheckpointActor::OnBeginOverlap);
 	
 }
 
@@ -65,7 +70,35 @@ void ACheckpointActor::OnEndOverlap(UPrimitiveComponent* OverlapComponent, AActo
 			APlayerBroomPawn* Actor = Cast<APlayerBroomPawn>(OtherActor);
 			Actor->CheckpointsPassed++;
 			ActorsPassedThrough.Add(OtherActor);
-			UE_LOG(LogTemp, Warning, TEXT("Passed"));
+			
+		}
+	}
+}
+
+void ACheckpointActor::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	bool bIsFound = false;
+	if(!ActorsPassedThrough.IsEmpty())
+	{
+		for(auto AlreadyPassedActor : ActorsPassedThrough)
+		{
+			if(AlreadyPassedActor == OtherActor)
+			{
+				bIsFound = true;
+				break;
+			}
+		}
+	}
+
+	if(!bIsFound && OtherActor->GetClass()->IsChildOf(APlayerBroomPawn::StaticClass()))
+	{
+		// Stops calling for each component on other actor
+		// Ideally would only check for the capsule but that gets called multiple times,
+		// whereas the mesh gets called once
+		if(OtherComp->GetClass()->IsChildOf(UStaticMeshComponent::StaticClass()))
+		{
+			AudioComponent->Play();
 		}
 	}
 }

@@ -10,7 +10,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
-#include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
@@ -55,7 +54,7 @@ APlayerBroomPawn::APlayerBroomPawn()
 	Camera->PostProcessSettings.MotionBlurMax = 2.0f;
 
 	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Movement"));
-	FloatingPawnMovement->MaxSpeed =  6705.6f; // 150mph since unreal engine units are cm/s
+	FloatingPawnMovement->MaxSpeed =  3576.32f; // 150mph since unreal engine units are cm/s
 	FloatingPawnMovement->Acceleration = 1000.0f; 
 	FloatingPawnMovement->Deceleration = FloatingPawnMovement->Acceleration * DecelerationMultiply;
 	FloatingPawnMovement->TurningBoost = 5.0f;
@@ -69,8 +68,7 @@ APlayerBroomPawn::APlayerBroomPawn()
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Col"));
 	BoxCollision->SetupAttachment(RootComponent);
 
-	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
-	AudioComponent->bAlwaysPlay = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -283,14 +281,7 @@ void APlayerBroomPawn::OnRelease(const FInputActionValue& Value)
 void APlayerBroomPawn::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor->GetClass()->IsChildOf(ACheckpointActor::StaticClass()))
-	{
-		// Stops calling for each component on other actor
-		if(OtherComp->GetClass()->IsChildOf(UStaticMeshComponent::StaticClass()))
-		{
-			AudioComponent->Play();
-		}
-	}
+	
 }
 
 void APlayerBroomPawn::OnLapTimerFinished()

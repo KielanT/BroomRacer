@@ -31,7 +31,7 @@ public:
 	
 private:
 	UPROPERTY(EditAnywhere)
-	UAudioComponent* AudioComponent;
+		UAudioComponent* AudioComponent;
 	
 	UPROPERTY()
 		int MaxLaps = 0;

@@ -7,8 +7,8 @@
 #include "MainGameInstance.h"
 #include "OnGameStateInterface.h"
 #include "PlayerBroomPawn.h"
-#include "SplineTrackCreatorActor.h"
 #include "Components/AudioComponent.h"
+#include "SplineTrackCreatorActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -24,14 +24,14 @@ ABroomRacerGameMode::ABroomRacerGameMode()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Plays background music
-	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Background Music"));
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Background Musci")); // Fixing the typo causes a crash
 }
 
 void ABroomRacerGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	AudioComponent->Play(); // Plays the music
 
+	AudioComponent->Play(); // Plays the music
 	// Works for testing levels individual, does not work when from level
 	//if(const TObjectPtr<ASplineTrackCreatorActor> Track = ASplineTrackCreatorActor::GetInstance())
 	//{

@@ -14,6 +14,11 @@ class UButton;
 class UMapButtonUserWidget;
 class UVerticalBox;
 
+// Map data is set in the play menu
+// Orginally some of the data would be set in the spline
+// However, if the track hasn't finished spawning then some of this data will not be set on the spline
+// Each level uses the same blueprint of the spline actor, if each map had seperate blueprints then this would not be an issue
+
 USTRUCT()
 struct FMapData
 {
@@ -21,13 +26,13 @@ struct FMapData
 
 public:
 	UPROPERTY(EditAnywhere)
-		FString MapName;
+		FString MapName; // Used to set the map name for changing to the correct map
 	
 	UPROPERTY(EditAnywhere)
-		FString MapDisplayName;
+		FString MapDisplayName; // The maps display name
 
 	UPROPERTY(EditAnywhere)
-		FString MapDetails;
+		FString MapDetails; // The map details for displaying in the menu
 
 	UPROPERTY()
 		float BestLapTime;
@@ -50,32 +55,32 @@ protected:
 	virtual void NativeConstruct() override;
 	
 private:
-	void DisplayMap();
-	void DisplayMapDetails();
+	void DisplayMap(); // Displays the map buttons
+	void DisplayMapDetails(); // Displays the map details
 
 	UFUNCTION()
-		void OnButtonClicked(UMapButtonUserWidget* ButtonUserWidget);
+		void OnButtonClicked(UMapButtonUserWidget* ButtonUserWidget); // Opens the correct map depending on the button
 	
 	UFUNCTION()
-		void LoadSelectedLevel();
+		void LoadSelectedLevel(); // Loads level
 
-	void LoadLevelAfterTime();
+	void LoadLevelAfterTime(); // Calls the level if there was loading screen
 	
 private:
 	UPROPERTY(EditAnywhere)
-		TArray<FMapData> MapArray;
+		TArray<FMapData> MapArray;// Array of the map data
 	
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<UMapButtonUserWidget> MapButtonClass;
+		TSubclassOf<UMapButtonUserWidget> MapButtonClass; // Map button class
 
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<ULoadingScreenUserWidget> LoadingScreenClass;
+		TSubclassOf<ULoadingScreenUserWidget> LoadingScreenClass; // Loading screen class
 	
 	UPROPERTY(meta = (BindWidget))
-		TObjectPtr<UVerticalBox> VerticalBoxTest;
+		TObjectPtr<UVerticalBox> VerticalBoxTest; 
 
 	UPROPERTY(meta = (BindWidget))
-		TObjectPtr<UButton> PlayButton;
+		TObjectPtr<UButton> PlayButton; // Used for going to the game
 
 	// Map Display Name
 	UPROPERTY(meta = (BindWidget))
@@ -93,10 +98,10 @@ private:
 	
 
 	UPROPERTY()
-		TObjectPtr<UMapButtonUserWidget> SelectedMapButton = nullptr;
+		TObjectPtr<UMapButtonUserWidget> SelectedMapButton = nullptr; 
 
 	UPROPERTY(EditAnywhere)
-		float MinTimeDelay = 10.0f;
+		float MinTimeDelay = 10.0f; // Minimun loading screen delay
 	
 	FTimerHandle LoadingScreenMinTimer;
 };

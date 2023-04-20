@@ -27,6 +27,7 @@ private:
 
 	
 public:
+
 	UPROPERTY(meta = (BindWidget))
 		TObjectPtr<UTextBlock> StartGameTimerText;
 

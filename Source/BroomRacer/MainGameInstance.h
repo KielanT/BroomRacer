@@ -14,8 +14,10 @@ class BROOMRACER_API UMainGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 
-
+		
 public:
+	// Data to be carried between scenes
+
 	UPROPERTY()
 		bool bIsMultipleLaps;
 

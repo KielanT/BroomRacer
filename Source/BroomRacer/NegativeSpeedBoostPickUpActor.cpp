@@ -12,6 +12,7 @@ void ANegativeSpeedBoostPickUpActor::OnPickUp(APawn* Pawn)
 	Super::OnPickUp(Pawn);
 	if(Pawn->GetClass()->IsChildOf(APlayerBroomPawn::StaticClass()))
 	{
+		// Opposite to the speed boost. Slows down the speed 
 		BroomPawn = Cast<APlayerBroomPawn>(Pawn);
 		PreviousSpeed = BroomPawn->DefaultSpeed;
 		BroomPawn->GetMovement()->MaxSpeed /= SpeedMultiplier;

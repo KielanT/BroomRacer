@@ -26,10 +26,12 @@ bool UGameOverUserWidget::Initialize()
 
 void UGameOverUserWidget::Restart()
 {
+	// Reloads the level
 	UGameplayStatics::OpenLevel(GetWorld(), FName(UGameplayStatics::GetCurrentLevelName(GetWorld())));
 }
 
 void UGameOverUserWidget::Quit()
 {
+	// Goes back to the main menu
 	UGameplayStatics::OpenLevel(GetWorld(), "MainMenu");
 }

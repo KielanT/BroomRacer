@@ -19,14 +19,16 @@ void ACustomPlayerController::OnGameStart()
 
 void ACustomPlayerController::OnGameOver()
 {
+	// Disbales the input changes the input
 	GetPawn()->DisableInput(this);
 	SetInputMode(FInputModeUIOnly());
 	bShowMouseCursor = true;
-	ChangeWidget(GameOverWidgetClass);
+	ChangeWidget(GameOverWidgetClass); // Sets the game over widget
 
 	// Better to do this at begin play but is not finding any checkpoints
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpointActor::StaticClass(), CheckpointActors);
 	
+	// Sets all the data on the game over widget
 	if(CurrentWidget->GetClass()->IsChildOf(UGameOverUserWidget::StaticClass()))
 	{
 		if(APlayerBroomPawn* PlayerPawn = Cast<APlayerBroomPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
@@ -38,9 +40,9 @@ void ACustomPlayerController::OnGameOver()
 				numCheckpoints =  CheckpointActors.Num() * (MaxLaps + 1); // Offset of 1 starts count at 0
 			}
 			
+			// Caluclates the missed checkpoints
 			const int Missed = numCheckpoints - PlayerPawn->CheckpointsPassed;
-			UE_LOG(LogTemp, Warning, TEXT("Missed Hoops %d"), Missed);
-			UE_LOG(LogTemp, Warning, TEXT("number of checkpoints %d"), CheckpointActors.Num());
+
 			if(Missed > 0)
 			{
 				float penalty = Missed * 5;
@@ -59,6 +61,8 @@ void ACustomPlayerController::OnGameOver()
 			FString BestLapTime = "Best Time: " + FString::SanitizeFloat(PlayerPawn->BestLapTime);
 			GameOverWidget->BestLapTimeText->SetText(FText::FromString(BestLapTime));
 
+
+			// Saves the best lap time for the current map
 			const FString MapName = UGameplayStatics::GetCurrentLevelName(GetWorld());
 			if(UBestLapSaveGame* LoadMapData = Cast<UBestLapSaveGame>(UGameplayStatics::LoadGameFromSlot("MapSave", 0)))
 			{
@@ -72,15 +76,13 @@ void ACustomPlayerController::OnGameOver()
 					NewSaveGame->MapsSaveData.Add(MapName, PlayerPawn->BestLapTime);
 				
 					UGameplayStatics::AsyncSaveGameToSlot(NewSaveGame, NewSaveGame->SaveSlotName, NewSaveGame->UserIndex);
+
 				}
 			}
 			
 			
 			FString LapTime = "Lap Time: " + FString::SanitizeFloat(PlayerPawn->PreviousLapTime);
 			GameOverWidget->LapTimeText->SetText(FText::FromString(LapTime));
-
-			
-			
 		}
 	}
 }
@@ -88,14 +90,12 @@ void ACustomPlayerController::OnGameOver()
 void ACustomPlayerController::OnPauseForCutScene()
 {
 	CustomTimeDilation = 0;
-	
 }
 
 void ACustomPlayerController::OnUnPauseForCutScene()
 {
 	CustomTimeDilation = 1;
 	ChangeWidget(HUDWidgetClass);
-	
 	
 	if(CurrentWidget->GetClass()->IsChildOf(UHUDWidget::StaticClass()))
 	{
@@ -121,7 +121,7 @@ void ACustomPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	
+	// Sets the input
 	SetInputMode(FInputModeGameOnly());
 	GetPawn()->DisableInput(this);
 }
@@ -129,7 +129,7 @@ void ACustomPlayerController::BeginPlay()
 void ACustomPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	RaceTimer();
+	RaceTimer(); // Update the timer every tick
 	
 }
 
@@ -153,10 +153,13 @@ void ACustomPlayerController::ChangeWidget(TSubclassOf<UUserWidget> WidgetClass)
 
 void ACustomPlayerController::RaceTimer()
 {
+	// Only update the timer if the widget and player exists
 	if(CurrentWidget != nullptr && CurrentWidget->GetClass()->IsChildOf(UHUDWidget::StaticClass()))
 	{
 		if(APlayerBroomPawn* PlayerPawn = Cast<APlayerBroomPawn>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0)))
 		{
+			// Sets and updates the HUD
+			
 			UHUDWidget* HUD = Cast<UHUDWidget>(CurrentWidget);
 
 			HUD->SpeedMPHText->SetText(FText::FromString(FString::FromInt(PlayerPawn->GetSpeedInMPH())));

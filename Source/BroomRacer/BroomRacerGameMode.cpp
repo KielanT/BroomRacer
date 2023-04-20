@@ -23,13 +23,14 @@ ABroomRacerGameMode::ABroomRacerGameMode()
 
 	PrimaryActorTick.bCanEverTick = true;
 
-	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Background Musci"));
+	// Plays background music
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Background Music"));
 }
 
 void ABroomRacerGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	AudioComponent->Play();
+	AudioComponent->Play(); // Plays the music
 
 	// Works for testing levels individual, does not work when from level
 	//if(const TObjectPtr<ASplineTrackCreatorActor> Track = ASplineTrackCreatorActor::GetInstance())
@@ -38,22 +39,22 @@ void ABroomRacerGameMode::BeginPlay()
 	//	MaxLaps = Track->GetLaps();
 	//}
 
+	// Gets the lap settings from the game instance
 	UMainGameInstance* GameInstanceRef = Cast<UMainGameInstance>(GetGameInstance());
 	if(GameInstanceRef)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Found Ref"));
 		bIsMultipleLaps = GameInstanceRef->bIsMultipleLaps;
 		MaxLaps = GameInstanceRef->MaxLaps;
 	}
 	
-
+	// Sets the values 
 	CustomPlayerController = Cast<ACustomPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	CustomPlayerController->SetMultipleLaps(bIsMultipleLaps);
 	CustomPlayerController->SetMaxLaps(MaxLaps);
 
 	
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), ActorsInWorld);
-	
+	// Pauses all actors that implements the game state interface for the cutscene
 	for(auto Actor : ActorsInWorld)
 	{
 		if(UKismetSystemLibrary::DoesImplementInterface(Actor, UOnGameStateInterface::StaticClass()))
@@ -91,7 +92,7 @@ void ABroomRacerGameMode::RaceFinished()
 					Interface->OnGameOver();
 					
 				}
-				break;
+				break; // Currently only one actor implements so break out for performance
 			}
 		}
 	}
@@ -106,6 +107,7 @@ void ABroomRacerGameMode::RaceFinished()
 
 void ABroomRacerGameMode::UnPauseAfterCutscene()
 {
+	// Unpauses all actors 
 	for(auto Actor : ActorsInWorld)
 	{
 		if(UKismetSystemLibrary::DoesImplementInterface(Actor, UOnGameStateInterface::StaticClass()))
@@ -114,7 +116,7 @@ void ABroomRacerGameMode::UnPauseAfterCutscene()
 			{
 				Interface->OnUnPauseForCutScene();
 			}
-			break;
+			break;// Currently only one actor implements so break out for performance
 		}
 	}
 }

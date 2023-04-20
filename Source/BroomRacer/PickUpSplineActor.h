@@ -37,6 +37,7 @@ private:
 	UPROPERTY(EditAnywhere)
 		USplineComponent* SplineComponent;
 
+	// A map of the different type of pickups, set in the blueprint
 	UPROPERTY(EditAnywhere)
 		TMap<int, TSubclassOf<ABasePickUpActor>> Pickups;
 };

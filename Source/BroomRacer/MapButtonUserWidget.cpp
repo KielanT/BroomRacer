@@ -17,5 +17,5 @@ bool UMapButtonUserWidget::Initialize()
 
 void UMapButtonUserWidget::OnButtonClicked()
 {
-	OnClickedDelegate.Broadcast(this);
+	OnClickedDelegate.Broadcast(this); // Custom button delegate
 }

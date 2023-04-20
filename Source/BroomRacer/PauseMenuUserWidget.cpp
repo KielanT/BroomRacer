@@ -11,6 +11,7 @@ bool UPauseMenuUserWidget::Initialize()
 {
 	Super::Initialize();
 	
+	// Bind all the buttons
 	if(ResumeButton == nullptr) return false;
 	ResumeButton->OnClicked.AddDynamic(this, &UPauseMenuUserWidget::Resume);
 	
@@ -27,21 +28,21 @@ void UPauseMenuUserWidget::Resume()
 {
 	if (ACustomPlayerController* PlayerController = Cast<ACustomPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0)))
 	{
-		PlayerController->UnPause();
+		PlayerController->UnPause(); // Unpauses the game
 	}
 }
 
 void UPauseMenuUserWidget::Restart()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), FName(UGameplayStatics::GetCurrentLevelName(GetWorld())));
+	UGameplayStatics::OpenLevel(GetWorld(), FName(UGameplayStatics::GetCurrentLevelName(GetWorld()))); // Reloads the current scene
 }
 
 void UPauseMenuUserWidget::Quit()
 {
-
+	// Unpauses but returns to main menu
 	if (ACustomPlayerController* PlayerController = Cast<ACustomPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0)))
 	{
-		PlayerController->UnPause();
+		PlayerController->UnPause(); 
 	}
 	UGameplayStatics::OpenLevel(GetWorld(), "MainMenu");
 }

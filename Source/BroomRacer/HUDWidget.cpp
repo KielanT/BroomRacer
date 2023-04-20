@@ -9,19 +9,19 @@ bool UHUDWidget::Initialize()
 {
 	Super::Initialize();
 
-	if(StartGameTimerText != nullptr) return false;
+	if(StartGameTimerText == nullptr) return false;
 	
-	if(GameRaceTimerText != nullptr) return false;
+	if(GameRaceTimerText == nullptr) return false;
 	
-	if(PreviousLapTimeText != nullptr) return false;
+	if(PreviousLapTimeText == nullptr) return false;
 	
-	if(MaxLapsText != nullptr) return false;
+	if(MaxLapsText == nullptr) return false;
 	
-	if(BestTimeText != nullptr) return false;
+	if(BestTimeText == nullptr) return false;
 	
-	if(CurrentLapsText != nullptr) return false;
+	if(CurrentLapsText == nullptr) return false;
 
-	if(SpeedMPHText != nullptr) return false;
+	if(SpeedMPHText == nullptr) return false;
 	
 	return true;
 }
@@ -30,17 +30,19 @@ void UHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	
+	// Shows the start count down timer
 	const int time = GetWorld()->GetTimerManager().GetTimerRemaining(RaceStartCountDownTimer);
 
 	if(time < 0)
 	{
-		StartGameTimerText->SetVisibility(ESlateVisibility::Hidden);
+		StartGameTimerText->SetVisibility(ESlateVisibility::Hidden); // Hides the text
 	}
 	
+	// Update the text
 	if(time <= TimerAmount - TIMER_OFFSET)
 	{
 		FText Text = FText::FromString(FString::FromInt(time));
-		StartGameTimerText->SetText(Text);
+		StartGameTimerText->SetText(Text); 
 		
 	}
 	else

@@ -24,6 +24,7 @@ void UMenuButtonActorWidget::InitWidget()
 	        WidgetInst = Cast<UMenuActorUserWidget>(GetWidget());
         	if(WidgetInst->ButtonText)
         	{
+                // Sets the text depending on what button it is
         		WidgetInst->ButtonText->SetText(FText::FromString(ButtonText));
         	}
         }

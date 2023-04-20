@@ -28,19 +28,21 @@ private:
 	
 private:
 	UPROPERTY(EditAnywhere)
-		float SpeedBoostRate = 10.0f;
+		float SpeedBoostRate = 10.0f; // Speed boost timer rate
 	
-	FTimerHandle SpeedBoostTimer;
+	FTimerHandle SpeedBoostTimer; // Timer handle
 	
 	UPROPERTY()
-		TObjectPtr<APlayerBroomPawn> BroomPawn;
+		TObjectPtr<APlayerBroomPawn> BroomPawn; // The actor that the speed boost has applied to  
+												// if there were AI this should just be a pawn then
+												// cast it to the broom or AI 
 
 	UPROPERTY(EditAnywhere)
-		float SpeedMultiplier = 2.0f;
+		float SpeedMultiplier = 2.0f; // Speed multiplier
 	
 	UPROPERTY()
-		float PreviousSpeed;
+		float PreviousSpeed; // Stores the previous boost for resetting
 
 	UPROPERTY()
-		float PreviousAcceleration;
+		float PreviousAcceleration; // Stores the previous Accleration for resetting
 };

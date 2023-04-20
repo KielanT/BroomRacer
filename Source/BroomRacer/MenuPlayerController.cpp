@@ -9,6 +9,7 @@ void AMenuPlayerController::SetCameraActor(AActor* Actor)
 {
 	if(Actor)
 	{
+		// Sets the camera to be the menu camera rather than the players camera
 		CameraActor = Actor;
 		SetViewTarget(CameraActor);
 	}
@@ -24,6 +25,7 @@ void AMenuPlayerController::OnPossess(APawn* InPawn)
 
 void AMenuPlayerController::ShowPlayMenu()
 {
+	// Shows the play menu 
 	ChangeWidget(PlayClass);
 	SetInputMode(FInputModeGameAndUI());
 	bShowMouseCursor = true;
@@ -31,6 +33,7 @@ void AMenuPlayerController::ShowPlayMenu()
 
 void AMenuPlayerController::ShowSettingsMenu()
 {
+	// Shows the settings menu
 	ChangeWidget(SettingsClass);
 	SetInputMode(FInputModeGameAndUI());
 	bShowMouseCursor = true;
@@ -39,7 +42,8 @@ void AMenuPlayerController::ShowSettingsMenu()
 void AMenuPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	// Sets the input mode
 	SetInputMode(FInputModeGameOnly());
 	bShowMouseCursor = false;
 	

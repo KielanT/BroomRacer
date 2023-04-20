@@ -8,16 +8,18 @@
 #include "InputActionValue.h"
 #include "MenuBroomPawn.generated.h"
 
+// Forward decleration
 class ULevelSequence;
 class UBoxComponent;
 class UMenuButtonActorWidget;
 
+// Moves states
 UENUM()
 enum class EMoveState
 {
 	None = 0,
-	FlyOfScreen,
-	Controlled,
+	FlyOfScreen, // Fly of screen when interected
+	Controlled, // Move up down with the cursor while using menu
 };
 
 UENUM()

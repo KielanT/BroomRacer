@@ -45,6 +45,7 @@ public:
 	float GetSpeedInMPH();
 	
 private:
+	// Input functions
 	void Move(const FInputActionValue& Value);
 	
 	void Look(const FInputActionValue& Value);
@@ -57,6 +58,9 @@ private:
 	void Brake(const FInputActionValue& Value);
 	void OnRelease(const FInputActionValue& Value);
 	
+
+
+
 	UFUNCTION()
 		void OnComponentOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 			bool bFromSweep, const FHitResult & SweepResult);
@@ -129,8 +133,8 @@ private:
 		float MaxLapTime = 3600; // Current Max lap time is an hour
 
 	
-	float MaxAcceleration;
+	float MaxAcceleration; // Used for storing the max accleration
 
-	float DecelerationMultiply = 1.0f;
+	float DecelerationMultiply = 1.0f; // Default multiplier
 
 };

@@ -22,6 +22,7 @@ class BROOMRACER_API IOnGameStateInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	// Interfaces for different states of the game
 	UFUNCTION()
 		virtual void OnGameStart() = 0;
 	

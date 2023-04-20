@@ -21,6 +21,7 @@ AFinishRaceActor::AFinishRaceActor()
 	MeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	MeshComponent->SetupAttachment(RootComp);
 
+	// Sets collision boxes
 	BlockLeft = CreateDefaultSubobject<UBoxComponent>(TEXT("Block Left"));
 	BlockLeft->SetupAttachment(MeshComponent);
 
@@ -33,6 +34,7 @@ AFinishRaceActor::AFinishRaceActor()
 	BlockBottom = CreateDefaultSubobject<UBoxComponent>(TEXT("Block Bottom"));
 	BlockBottom->SetupAttachment(MeshComponent);
 
+	// Finish collision box
 	FinishCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Finish Col"));
 	FinishCollisionBox->SetupAttachment(MeshComponent);
 }
@@ -41,12 +43,13 @@ AFinishRaceActor::AFinishRaceActor()
 void AFinishRaceActor::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	// binds the collision box
 	FinishCollisionBox->OnComponentEndOverlap.AddDynamic(this, &AFinishRaceActor::OnEndOverlap);
 	
 	GameModeRef = Cast<ABroomRacerGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
-	
-	
+	// Get all the checkpoints
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACheckpointActor::StaticClass(), CheckpointActors);
 	
 }
@@ -61,23 +64,25 @@ void AFinishRaceActor::Tick(float DeltaTime)
 void AFinishRaceActor::OnEndOverlap(UPrimitiveComponent* OverlapComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	
+	// Check if the overlaped actor is the broom
 	if(OtherActor->GetClass()->IsChildOf(APlayerBroomPawn::StaticClass()))
 	{
+		// An extra check to make sure that this is only called once
+		// since there are multiple components that can be used to collide
 		if(OtherComp->GetClass()->IsChildOf(UStaticMeshComponent::StaticClass()))
 		{
 			APlayerBroomPawn* Actor = Cast<APlayerBroomPawn>(OtherActor);
-			Actor->StopLapTime();
+			Actor->StopLapTime(); // Stops the lap time
 
 			for(auto checkpointActor : CheckpointActors)
 			{
 				if(ACheckpointActor* Checkpoint = Cast<ACheckpointActor>(checkpointActor))
 				{
-					Checkpoint->ActorsPassedThrough.Empty();
+					Checkpoint->ActorsPassedThrough.Empty(); // resets the checkpoints 
 				}
 			}
 
-			GameModeRef->RaceFinished();
+			GameModeRef->RaceFinished(); // Sets the race/lap to be finished
 		}
 	}
 	

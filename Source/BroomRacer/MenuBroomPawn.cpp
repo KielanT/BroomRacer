@@ -24,6 +24,7 @@ AMenuBroomPawn::AMenuBroomPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// Create components
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Broom Mesh"));
 	SetRootComponent(StaticMeshComponent);
 
@@ -33,6 +34,7 @@ AMenuBroomPawn::AMenuBroomPawn()
 	AttachLocation = CreateDefaultSubobject<USceneComponent>(TEXT("Attach Location"));
 	AttachLocation->SetupAttachment(RootComponent);
 	
+	// Create the widget
 	MenuButtonWidget = CreateDefaultSubobject<UMenuButtonActorWidget>(TEXT("Widget Component"));
 	MenuButtonWidget->SetupAttachment(RootComponent);
 	MenuButtonWidget->SetVisibility(true);
@@ -43,17 +45,19 @@ AMenuBroomPawn::AMenuBroomPawn()
 void AMenuBroomPawn::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	// Bind collision
 	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &AMenuBroomPawn::OnComponentOverlap);
 	BoxCollision->OnComponentEndOverlap.AddDynamic(this, &AMenuBroomPawn::OnComponentEndOverlap);
 
 	if(TObjectPtr<UMenuActorUserWidget> MenuWidget = Cast<UMenuActorUserWidget>(MenuButtonWidget->GetWidget()))
 	{
-		StartSlateColor = MenuWidget->ButtonText->GetColorAndOpacity();
+		StartSlateColor = MenuWidget->ButtonText->GetColorAndOpacity(); // Gets the starting colour 
 	}
 	if (AMenuPlayerController* MenuController = Cast<AMenuPlayerController>(Controller))
 	{
-		// Stops the controls from going inverted
-		MenuController->SetControlRotation(GetActorRotation());
+		// Stops the controls from going inverted (still happens occasionally)
+		MenuController->SetControlRotation(GetActorRotation()); 
 		
 	}
 }
@@ -80,26 +84,26 @@ void AMenuBroomPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AMenuBroomPawn::Interact(APawn* InteractCharacter)
 {
+	// Sets the attachment info and locations
 	FAttachmentTransformRules Rules = FAttachmentTransformRules::KeepWorldTransform;
 	InteractCharacter->AttachToActor(this, Rules);
-	MountedPawnLocation = InteractCharacter->GetActorLocation();
+	MountedPawnLocation = InteractCharacter->GetActorLocation(); // Sets the location before mounting for resetting
 	MountedPawnRotation = InteractCharacter->GetActorRotation();
 	InteractCharacter->SetActorLocation(AttachLocation->GetComponentLocation());
 	InteractCharacter->SetActorRotation(AttachLocation->GetComponentRotation());
 	AMenuPlayerController* MenuController = Cast<AMenuPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	MenuController->Possess(this);
+	MenuController->Possess(this); // Mounts this
 	MenuButtonWidget->SetVisibility(false);
 
 	if (AMenuPlayerController* BroomController = Cast<AMenuPlayerController>(Controller))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Menu Broom controller"));
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(BroomController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
 	
-	if(MoveState == EMoveState::FlyOfScreen)
+	if(MoveState == EMoveState::FlyOfScreen) // Runs the code for flying of the sceen
 	{
 		TArray<AActor*> OutActors;
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALevelSequenceActor::StaticClass(),OutActors);
@@ -112,13 +116,15 @@ void AMenuBroomPawn::Interact(APawn* InteractCharacter)
 				break;
 			}
 		}
-
+		
+		// Plays the sequence
 		if(LevelSequenceActor)
 		{
 			LevelSequenceActor->SequencePlayer->Play();
 		}
 	}
 
+	// Shows the menus 
 	if(ButtonType == EButtonType::Play)
 	{
 		MenuController->ShowPlayMenu();
@@ -127,11 +133,14 @@ void AMenuBroomPawn::Interact(APawn* InteractCharacter)
 	{
 		MenuController->ShowSettingsMenu();
 	}
+	
+	// A pointer to the interacted character
 	MountedPawn = InteractCharacter;
 }
 
 void AMenuBroomPawn::UnMount()
 {
+	// UnMount this, reposses the player 
 	AMenuPlayerController* MenuController = Cast<AMenuPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	MenuController->Possess(MountedPawn);
 	
@@ -156,7 +165,7 @@ void AMenuBroomPawn::LoadLevel()
 {
 	if(!LevelToLoad.IsEmpty())
 	{
-		UGameplayStatics::OpenLevel(GetWorld(), FName(LevelToLoad));
+		UGameplayStatics::OpenLevel(GetWorld(), FName(LevelToLoad)); // Loads the correct level
 	}
 }
 
@@ -173,7 +182,7 @@ void AMenuBroomPawn::OnComponentOverlap(UPrimitiveComponent* OverlappedComponent
 		if(TObjectPtr<UMenuActorUserWidget> MenuWidget = Cast<UMenuActorUserWidget>(MenuButtonWidget->GetWidget()))
 		{
 			const FSlateColor col = FSlateColor(FLinearColor::Red);
-			MenuWidget->ButtonText->SetColorAndOpacity(col);
+			MenuWidget->ButtonText->SetColorAndOpacity(col); // changes the colour on overlap
 		}
 	}
 }
@@ -185,7 +194,7 @@ void AMenuBroomPawn::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
 	{
 		if(TObjectPtr<UMenuActorUserWidget> MenuWidget = Cast<UMenuActorUserWidget>(MenuButtonWidget->GetWidget()))
 		{
-			MenuWidget->ButtonText->SetColorAndOpacity(StartSlateColor);
+			MenuWidget->ButtonText->SetColorAndOpacity(StartSlateColor); // resets the colour on end overlap
 		}
 	}
 }

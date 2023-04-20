@@ -21,7 +21,7 @@ bool UPlayMenuUserWidget::Initialize()
 	if(VerticalBoxTest == nullptr) return false;
 	
 	if(PlayButton == nullptr) return false;
-	PlayButton->OnClicked.AddDynamic(this, &UPlayMenuUserWidget::LoadSelectedLevel);
+	PlayButton->OnClicked.AddDynamic(this, &UPlayMenuUserWidget::LoadSelectedLevel);// binds the on button click
 
 	if(MapDetailBorder == nullptr) return false;
 	if(DisplayName == nullptr) return false;
@@ -36,6 +36,7 @@ void UPlayMenuUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	// Displays the map
 	DisplayMap();
 	MapDetailBorder->SetVisibility(ESlateVisibility::Hidden);
 
@@ -46,6 +47,11 @@ void UPlayMenuUserWidget::NativeConstruct()
 void UPlayMenuUserWidget::DisplayMap()
 {
 	VerticalBoxTest->ClearChildren();
+
+	// If the map button class exists 
+	// creates all the map buttons with the map array
+	// sets the map data
+	
 	if(MapButtonClass)
 	{
 		int i = 0;
@@ -58,6 +64,7 @@ void UPlayMenuUserWidget::DisplayMap()
 			MapWidget->MapDetailsString = MapData.MapDetails;
 			MapWidget->MAPIndex = i;
 
+			// Gets the best lap times for each map
 			if(UBestLapSaveGame* LoadMapData = Cast<UBestLapSaveGame>(UGameplayStatics::LoadGameFromSlot("MapSave", 0)))
 			{
 				if(!LoadMapData->MapsSaveData.IsEmpty())
@@ -66,7 +73,7 @@ void UPlayMenuUserWidget::DisplayMap()
 						MapWidget->BestLapTime = *LoadMapData->MapsSaveData.Find(MapData.MapName);
 				}
 			}
-			VerticalBoxTest->AddChild(MapWidget);
+			VerticalBoxTest->AddChild(MapWidget); // Adds the widget to the menu widget
 			i++;
 		}
 	}
@@ -79,6 +86,7 @@ void UPlayMenuUserWidget::DisplayMapDetails()
 {
 	if(SelectedMapButton != nullptr)
 	{
+		// Sets the menu widgets to the selected map button data
 		MapDetailBorder->SetVisibility(ESlateVisibility::Visible);
 		DisplayName->SetText(SelectedMapButton->MapDisplayText->GetText());
 		MapDetails->SetText(FText::FromString(SelectedMapButton->MapDetailsString));
@@ -88,16 +96,18 @@ void UPlayMenuUserWidget::DisplayMapDetails()
 
 void UPlayMenuUserWidget::OnButtonClicked(UMapButtonUserWidget* ButtonUserWidget)
 {
+
 	if(SelectedMapButton != nullptr)
 	{
 		SelectedMapButton->MapButton->SetIsEnabled(true);
 		SelectedMapButton->MapButton->SetBackgroundColor(FLinearColor::White);
 	}
-	
+
+	// Sets the new selected button
 	SelectedMapButton = ButtonUserWidget;
 	SelectedMapButton->MapButton->SetIsEnabled(false);
 	SelectedMapButton->MapButton->SetBackgroundColor(FLinearColor::Green);
-	DisplayMapDetails();
+	DisplayMapDetails(); // Displays the correct map details
 	
 }
 
@@ -122,12 +132,12 @@ void UPlayMenuUserWidget::LoadSelectedLevel()
 		//}
 		//else
 		//{
-			UGameplayStatics::OpenLevel(GetWorld(), FName(SelectedMapButton->MapNameString));
+			UGameplayStatics::OpenLevel(GetWorld(), FName(SelectedMapButton->MapNameString)); // opens the new level
 		//}
 		UMainGameInstance* GameInstanceRef = Cast<UMainGameInstance>(GetGameInstance());
 		if(GameInstanceRef)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Found Ref"));
+			// Carry over the map settings to the open level
 			GameInstanceRef->bIsMultipleLaps = MapArray[SelectedMapButton->MAPIndex].bIsMultipleLaps;
 			GameInstanceRef->MaxLaps = MapArray[SelectedMapButton->MAPIndex].MaxLaps;
 		}

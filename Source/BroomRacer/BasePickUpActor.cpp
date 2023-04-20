@@ -12,10 +12,12 @@ ABasePickUpActor::ABasePickUpActor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// base pick up components, setsin the blueprints
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Pick Up Mesh"));
 	MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SetRootComponent(MeshComponent);
 
+	// Pick up the collision box
 	PickUpCollisionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Pick Up Col box"));
 	PickUpCollisionBox->SetupAttachment(MeshComponent);
 	
@@ -25,11 +27,14 @@ ABasePickUpActor::ABasePickUpActor()
 void ABasePickUpActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Binds the pickup collision function
 	PickUpCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ABasePickUpActor::OnBeginOverlap);
 }
 
 void ABasePickUpActor::OnPickUp(APawn* Pawn)
 {
+	// Implemented by the children
 }
 
 void ABasePickUpActor::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -38,13 +43,14 @@ void ABasePickUpActor::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 	if(OtherActor->GetClass()->IsChildOf(APawn::StaticClass()))
 	{
 		APawn* Pawn = Cast<APawn>(OtherActor);
-		OnPickUp(Pawn);
+		OnPickUp(Pawn); // Calls the pickup function
 	}
 }
 
 // Called every frame
 void ABasePickUpActor::Tick(float DeltaTime)
 {
+	// Rotates the actor on the Y axis
 	Super::Tick(DeltaTime);
 	FRotator Rotator(0, 1.0f, 0);
 	AddActorLocalRotation((Rotator * RotationSpeed) * DeltaTime);

@@ -31,6 +31,7 @@ public:
 	
 private:
 
+	// Input functions
 	void Move(const FInputActionValue& Value);
 	
 	void Look(const FInputActionValue& Value);
@@ -43,7 +44,7 @@ public:
 	bool IsInGame = true;
 
 	UPROPERTY(BlueprintReadOnly)
-		bool IsMounted = false;
+		bool IsMounted = false; 
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

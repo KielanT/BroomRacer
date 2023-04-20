@@ -56,6 +56,7 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Sets the input map
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -75,6 +76,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 // Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
+	// Bind the inputs
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		//Moving
@@ -83,9 +85,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 
+		// Interact
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &APlayerCharacter::OnInteract);
-
-
 	}
 
 }
@@ -114,7 +115,8 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
-	if(IsInGame)
+	// if in the menu disable the look code (character becomes the selector)
+	if(IsInGame) 
 	{
 		// input is a Vector2D
 		FVector2D LookAxisVector = Value.Get<FVector2D>();
@@ -133,6 +135,7 @@ void APlayerCharacter::OnInteract(const FInputActionValue& Value)
 	TArray<AActor*> OverlappedActors;
 	GetOverlappingActors(OverlappedActors);
 
+	// If interacted with a broom then hops on to it
 	for(auto Actor : OverlappedActors)
 	{
 		if(UKismetSystemLibrary::DoesImplementInterface(Actor, UInteractInterface::StaticClass()))
@@ -140,7 +143,7 @@ void APlayerCharacter::OnInteract(const FInputActionValue& Value)
 			if(IInteractInterface* Interface = Cast<IInteractInterface>(Actor))
 			{
 				Interface->Interact(this);
-				IsMounted = true;
+				IsMounted = true; // Is used to change the animation 
 			}
 			break;
 		}
